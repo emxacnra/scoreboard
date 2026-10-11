@@ -6,7 +6,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#030611">
-  <title>Neon Scoreboard v1.1</title>
+  <title>Neon Scoreboard v1.2</title>
 
   <style>
     :root {
@@ -449,12 +449,12 @@
       border-color: var(--accent);
       box-shadow: 0 0 10px #00eaff55;
       font-size: 23px;
-      font-family: Arial, "Segoe UI Symbol", sans-serif;
       background: var(--button);
     }
 
     body:not(.light) #themeToggle {
       color: #ffffff;
+      font-family: Arial, "Segoe UI Symbol", sans-serif;
     }
 
     body.light #themeToggle {
@@ -1108,7 +1108,7 @@
         /* Sun in dark mode; moon in light mode.
            \uFE0E forces text presentation so CSS color applies (white sun). */
         $('themeToggle').textContent =
-          theme === 'dark' ? '\u2600\uFE0E' : '\u263E\uFE0E';
+          theme === 'dark' ? '\u2600\uFE0E' : '☾';
 
         $('themeToggle').setAttribute(
           'aria-label',
