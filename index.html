@@ -1,314 +1,438 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#101318">
-<title>Scoreboard</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;background:#101318;color:white;font-family:-apple-system,BlinkMacSystemFont,sans-serif;touch-action:manipulation}
-main{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;padding:18px;gap:12px}
-header{display:flex;justify-content:center;align-items:center;font-weight:800;letter-spacing:2px}
-button,input{font:inherit}
-button{border:0;border-radius:12px;padding:12px;background:#293140;color:white;font-weight:700;touch-action:manipulation}
-button:active{opacity:.7}
-.teams{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1}
-.team{border-radius:20px;padding:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;min-width:0;touch-action:none}
-.team.blue{background:#1565FF}
-.team.red{background:#E53935}
-input{width:100%;min-width:0;background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.35);color:white;border-radius:9px;padding:10px;text-align:center;font-weight:700;touch-action:pan-x}
-input:focus{outline:2px solid white}
-.score{font-size:clamp(76px,22vw,180px);font-weight:800;line-height:1;user-select:none;-webkit-user-select:none;width:100%;text-align:center;padding:12px 0;pointer-events:none}
-.hint{font-size:11px;color:rgba(255,255,255,.9);text-align:center;line-height:1.8;pointer-events:none}
-.settings{display:flex;align-items:center;justify-content:center;gap:10px;background:#202630;padding:10px;border-radius:14px}
-.settings label{font-size:14px;font-weight:700}
-#target{width:80px;background:#101318;border-color:#465164}
-.clock{text-align:center;background:#202630;border-radius:18px;padding:12px}
-.time{font-size:clamp(38px,10vw,56px);font-weight:800;font-variant-numeric:tabular-nums}
-.controls{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:10px}
-.controls button{min-width:85px}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-footer{display:flex}
-footer button{width:100%}
-#winner{display:none;text-align:center;padding:14px;border-radius:14px;background:#174B2B;font-weight:900;font-size:clamp(20px,5vw,32px)}
-#winner.show{display:block}
-.team.won{outline:4px solid #FFD54F;outline-offset:-4px}
-@media (orientation:landscape) and (min-width:600px){
- main{padding:8px 24px;gap:8px}
- .teams{min-height:0}
- .team{gap:6px}
- .score{font-size:clamp(60px,17vh,150px);padding:4px 0}
- .clock{padding:6px}
- .time{font-size:32px}
- .controls{margin-top:4px}
- .settings{padding:6px}
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Scoreboard</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #101114;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    header {
+      padding: 16px 10px 10px;
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: 3px;
+    }
+
+    .settings {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin: 8px 10px 12px;
+      flex-wrap: wrap;
+    }
+
+    .settings label {
+      font-size: 14px;
+      color: #ccc;
+    }
+
+    #target {
+      width: 65px;
+      padding: 8px;
+      border: 1px solid #555;
+      border-radius: 8px;
+      background: #25262b;
+      color: white;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .teams {
+      display: flex;
+      gap: 8px;
+      padding: 0 8px;
+      height: min(56vh, 460px);
+      min-height: 250px;
+    }
+
+    .team {
+      flex: 1;
+      min-width: 0;
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 6px;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+      overflow: hidden;
+    }
+
+    .team.blue { background: #1565FF; }
+    .team.red { background: #E53935; }
+
+    .team.won {
+      outline: 4px solid #FFD54F;
+      outline-offset: -4px;
+    }
+
+    .team-name {
+      width: 95%;
+      min-width: 0;
+      border: none;
+      border-bottom: 2px solid rgba(255,255,255,.65);
+      outline: none;
+      border-radius: 0;
+      background: transparent;
+      color: white;
+      text-align: center;
+      text-transform: uppercase;
+      font-weight: 800;
+      font-size: clamp(14px, 3.5vw, 22px);
+      padding: 6px 0;
+      margin-bottom: 12px;
+      touch-action: manipulation;
+    }
+
+    .team-name::placeholder {
+      color: rgba(255,255,255,.75);
+    }
+
+    .score {
+      font-size: clamp(80px, 23vw, 150px);
+      line-height: 1;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hint {
+      margin-top: 16px;
+      font-size: 12px;
+      opacity: .8;
+      line-height: 1.5;
+    }
+
+    #winner {
+      display: none;
+      margin: 12px 8px;
+      padding: 12px;
+      color: #FFD54F;
+      font-size: clamp(20px, 5vw, 30px);
+      font-weight: 900;
+    }
+
+    #winner.show { display: block; }
+
+    .clock {
+      margin: 12px 0 8px;
+      font-size: clamp(34px, 9vw, 48px);
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .controls, .actions {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 6px 10px;
+    }
+
+    button {
+      border: 1px solid #555;
+      border-radius: 10px;
+      padding: 11px 14px;
+      background: #292a30;
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    button:active { background: #44464f; }
+
+    #start {
+      background: #16803c;
+      border-color: #16803c;
+    }
+
+    #resetMatch {
+      background: #9f2929;
+      border-color: #9f2929;
+    }
+
+    .footer {
+      padding: 8px 10px 16px;
+      color: #888;
+      font-size: 11px;
+    }
+  </style>
 </head>
+
 <body>
-<main>
-<header><span>SCOREBOARD</span></header>
+  <header>SCOREBOARD</header>
 
-<div class="settings">
-<label for="target">TARGET SCORE</label>
-<input id="target" type="number" min="1" max="999" value="21" inputmode="numeric">
-</div>
+  <div class="settings">
+    <label for="target">Target score</label>
+    <input id="target" type="number" min="1" max="999" value="21" inputmode="numeric">
+  </div>
 
-<div id="winner" role="status" aria-live="polite"></div>
+  <main>
+    <div class="teams">
+      <section id="teamA" class="team blue" aria-label="Team A score panel">
+        <input id="nameA" class="team-name" type="text" value="TEAM A" maxlength="18" aria-label="Team A name">
+        <div id="scoreA" class="score">0</div>
+        <div class="hint">TAP: +1<br>SWIPE UP: +1<br>SWIPE DOWN: −1</div>
+      </section>
 
-<section class="teams">
-<div class="team blue" id="teamA">
-<input id="nameA" value="TEAM A" aria-label="Team A name">
-<div class="score" id="scoreA">0</div>
-<div class="hint">TAP / SWIPE UP: +1<br>SWIPE DOWN: −1</div>
-</div>
+      <section id="teamB" class="team red" aria-label="Team B score panel">
+        <input id="nameB" class="team-name" type="text" value="TEAM B" maxlength="18" aria-label="Team B name">
+        <div id="scoreB" class="score">0</div>
+        <div class="hint">TAP: +1<br>SWIPE UP: +1<br>SWIPE DOWN: −1</div>
+      </section>
+    </div>
 
-<div class="team red" id="teamB">
-<input id="nameB" value="TEAM B" aria-label="Team B name">
-<div class="score" id="scoreB">0</div>
-<div class="hint">TAP / SWIPE UP: +1<br>SWIPE DOWN: −1</div>
-</div>
-</section>
+    <div id="winner" role="status" aria-live="polite"></div>
 
-<section class="clock">
-<div class="hint">MATCH CLOCK</div>
-<div class="time" id="time">00:00</div>
-<div class="controls">
-<button id="start">▶ Start</button>
-<button id="resetClock">Reset Clock</button>
-<button id="full">Full Screen</button>
-</div>
-</section>
+    <div id="time" class="clock">00:00</div>
 
-<div class="actions">
-<button id="swap">⇄ Swap Teams</button>
-<button id="resetMatch">↻ Reset Match</button>
-</div>
+    <div class="controls">
+      <button id="start" type="button">▶ Start</button>
+      <button id="resetClock" type="button">Reset Clock</button>
+    </div>
 
-<footer>
-<button id="awake">Keep Awake: Off</button>
-</footer>
-</main>
+    <div class="actions">
+      <button id="swap" type="button">Swap Teams</button>
+      <button id="resetMatch" type="button">Reset Match</button>
+      <button id="awake" type="button">Keep Awake: Off</button>
+    </div>
+  </main>
 
-<script>
-const $ = id => document.getElementById(id);
+  <div class="footer">Tap or swipe inside either team's panel to change the score.</div>
 
-let a = 0, b = 0;
-let seconds = 0;
-let running = false;
-let last = Date.now();
-let wakeLock = null;
-let winner = null;
+  <script>
+    const $ = id => document.getElementById(id);
 
-function getTarget() {
-  const value = Number($('target').value);
-  return Number.isFinite(value) && value >= 1
-    ? Math.floor(value)
-    : 21;
-}
+    let a = 0;
+    let b = 0;
+    let seconds = 0;
+    let running = false;
+    let last = Date.now();
+    let wakeLock = null;
+    let winner = null;
 
-function teamName(side) {
-  const value = $(side === 'a' ? 'nameA' : 'nameB').value.trim();
-  return value || (side === 'a' ? 'TEAM A' : 'TEAM B');
-}
-
-function checkWinner() {
-  if (winner) return;
-
-  if (a >= getTarget()) winner = 'a';
-  else if (b >= getTarget()) winner = 'b';
-
-  if (winner) {
-    running = false;
-    last = Date.now();
-  }
-}
-
-function draw() {
-  $('scoreA').textContent = a;
-  $('scoreB').textContent = b;
-  $('time').textContent =
-    String(Math.floor(seconds / 60)).padStart(2, '0') + ':' +
-    String(seconds % 60).padStart(2, '0');
-  $('start').textContent = running ? 'Ⅱ Pause' : '▶ Start';
-
-  $('teamA').classList.toggle('won', winner === 'a');
-  $('teamB').classList.toggle('won', winner === 'b');
-
-  const banner = $('winner');
-  if (winner) {
-    banner.textContent = '🏆 ' + teamName(winner) + ' WINS!';
-    banner.classList.add('show');
-  } else {
-    banner.textContent = '';
-    banner.classList.remove('show');
-  }
-}
-
-function change(side, delta) {
-  if (winner) return;
-
-  if (side === 'a') a = Math.max(0, a + delta);
-  else b = Math.max(0, b + delta);
-
-  checkWinner();
-  draw();
-}
-
-function setupSwipe(id, side) {
-  const el = $(id);
-  let start = null;
-
-  el.addEventListener('pointerdown', event => {
-    if (event.target.closest('input')) return;
-    if (event.pointerType === 'mouse' && event.button !== 0) return;
-
-    start = {
-      x: event.clientX,
-      y: event.clientY,
-      time: Date.now()
-    };
-  });
-
-  el.addEventListener('pointerup', event => {
-    if (!start) return;
-
-    const dx = event.clientX - start.x;
-    const dy = event.clientY - start.y;
-    const duration = Date.now() - start.time;
-    start = null;
-
-    if (Math.abs(dy) > 25 && Math.abs(dy) > Math.abs(dx)) {
-      change(side, dy < 0 ? 1 : -1);
-    } else if (
-      Math.abs(dx) < 12 &&
-      Math.abs(dy) < 12 &&
-      duration < 500
-    ) {
-      change(side, 1);
+    function getTarget() {
+      const value = Number($('target').value);
+      return Number.isFinite(value) && value >= 1
+        ? Math.floor(value)
+        : 21;
     }
-  });
 
-  el.addEventListener('pointercancel', () => start = null);
-}
-
-setupSwipe('teamA', 'a');
-setupSwipe('teamB', 'b');
-
-$('start').onclick = () => {
-  if (winner) return;
-  running = !running;
-  last = Date.now();
-  draw();
-};
-
-setInterval(() => {
-  const now = Date.now();
-  if (running) {
-    seconds += Math.max(0, Math.floor((now - last) / 1000));
-  }
-  last = now;
-  draw();
-}, 250);
-
-$('resetClock').onclick = () => {
-  running = false;
-  seconds = 0;
-  last = Date.now();
-  draw();
-};
-
-$('swap').onclick = () => {
-  const oldNameA = $('nameA').value;
-  $('nameA').value = $('nameB').value;
-  $('nameB').value = oldNameA;
-
-  [a, b] = [b, a];
-
-  $('teamA').classList.toggle('blue');
-  $('teamA').classList.toggle('red');
-  $('teamB').classList.toggle('blue');
-  $('teamB').classList.toggle('red');
-
-  if (winner) winner = winner === 'a' ? 'b' : 'a';
-  draw();
-};
-
-$('resetMatch').onclick = () => {
-  if (confirm('Reset both scores and the match clock?')) {
-    a = 0;
-    b = 0;
-    seconds = 0;
-    running = false;
-    winner = null;
-    last = Date.now();
-    draw();
-  }
-};
-
-$('target').addEventListener('change', () => {
-  winner = null;
-  checkWinner();
-  draw();
-});
-
-$('nameA').addEventListener('input', draw);
-$('nameB').addEventListener('input', draw);
-
-$('full').onclick = async () => {
-  const isStandalone =
-    window.navigator.standalone === true ||
-    window.matchMedia('(display-mode: standalone)').matches;
-
-  try {
-    if (document.fullscreenElement) {
-      await document.exitFullscreen();
-    } else if (document.documentElement.requestFullscreen) {
-      await document.documentElement.requestFullscreen();
-    } else if (!isStandalone) {
-      alert('On iPhone, open Safari Share → Add to Home Screen, then launch the scoreboard from its icon for a borderless view.');
+    function teamName(side) {
+      const value = $(side === 'a' ? 'nameA' : 'nameB').value.trim();
+      return value || (side === 'a' ? 'TEAM A' : 'TEAM B');
     }
-  } catch (e) {
-    alert('For a borderless view on iPhone, launch the scoreboard from your Home Screen.');
-  }
-};
 
-$('awake').onclick = async () => {
-  try {
-    if (!wakeLock) {
-      wakeLock = await navigator.wakeLock.request('screen');
-      $('awake').textContent = 'Keep Awake: On';
+    function checkWinner() {
+      if (winner) return;
 
-      wakeLock.addEventListener('release', () => {
-        wakeLock = null;
-        $('awake').textContent = 'Keep Awake: Off';
+      if (a >= getTarget()) winner = 'a';
+      else if (b >= getTarget()) winner = 'b';
+
+      if (winner) {
+        running = false;
+        last = Date.now();
+      }
+    }
+
+    function draw() {
+      $('scoreA').textContent = a;
+      $('scoreB').textContent = b;
+
+      $('time').textContent =
+        String(Math.floor(seconds / 60)).padStart(2, '0') + ':' +
+        String(seconds % 60).padStart(2, '0');
+
+      $('start').textContent = running ? 'Ⅱ Pause' : '▶ Start';
+
+      $('teamA').classList.toggle('won', winner === 'a');
+      $('teamB').classList.toggle('won', winner === 'b');
+
+      const banner = $('winner');
+
+      if (winner) {
+        banner.textContent = '🏆 ' + teamName(winner) + ' WINS!';
+        banner.classList.add('show');
+      } else {
+        banner.textContent = '';
+        banner.classList.remove('show');
+      }
+    }
+
+    function change(side, delta) {
+      if (winner) return;
+
+      if (side === 'a') {
+        a = Math.max(0, a + delta);
+      } else {
+        b = Math.max(0, b + delta);
+      }
+
+      checkWinner();
+      draw();
+    }
+
+    function setupSwipe(id, side) {
+      const el = $(id);
+      let start = null;
+
+      el.addEventListener('pointerdown', event => {
+        if (event.target.closest('input')) return;
+        if (event.pointerType === 'mouse' && event.button !== 0) return;
+
+        start = {
+          x: event.clientX,
+          y: event.clientY,
+          time: Date.now()
+        };
       });
-    } else {
-      await wakeLock.release();
-      wakeLock = null;
-      $('awake').textContent = 'Keep Awake: Off';
-    }
-  } catch (e) {
-    alert('Keep Awake is unavailable in this browser.');
-  }
-};
 
-document.addEventListener('visibilitychange', async () => {
-  if (document.visibilityState === 'visible' && wakeLock) {
-    try {
-      wakeLock = await navigator.wakeLock.request('screen');
-    } catch (e) {
-      wakeLock = null;
-      $('awake').textContent = 'Keep Awake: Off';
-    }
-  }
-});
+      el.addEventListener('pointerup', event => {
+        if (!start) return;
 
-draw();
-</script>
+        const dx = event.clientX - start.x;
+        const dy = event.clientY - start.y;
+        const duration = Date.now() - start.time;
+
+        start = null;
+
+        if (Math.abs(dy) > 25 && Math.abs(dy) > Math.abs(dx)) {
+          change(side, dy < 0 ? 1 : -1);
+        } else if (
+          Math.abs(dx) < 12 &&
+          Math.abs(dy) < 12 &&
+          duration < 500
+        ) {
+          change(side, 1);
+        }
+      });
+
+      el.addEventListener('pointercancel', () => {
+        start = null;
+      });
+    }
+
+    setupSwipe('teamA', 'a');
+    setupSwipe('teamB', 'b');
+
+    $('start').onclick = () => {
+      if (winner) return;
+
+      running = !running;
+      last = Date.now();
+      draw();
+    };
+
+    setInterval(() => {
+      const now = Date.now();
+
+      if (running) {
+        seconds += Math.max(0, Math.floor((now - last) / 1000));
+      }
+
+      last = now;
+      draw();
+    }, 250);
+
+    $('resetClock').onclick = () => {
+      running = false;
+      seconds = 0;
+      last = Date.now();
+      draw();
+    };
+
+    $('swap').onclick = () => {
+      const oldNameA = $('nameA').value;
+
+      $('nameA').value = $('nameB').value;
+      $('nameB').value = oldNameA;
+
+      [a, b] = [b, a];
+
+      $('teamA').classList.toggle('blue');
+      $('teamA').classList.toggle('red');
+      $('teamB').classList.toggle('blue');
+      $('teamB').classList.toggle('red');
+
+      if (winner) {
+        winner = winner === 'a' ? 'b' : 'a';
+      }
+
+      draw();
+    };
+
+    $('resetMatch').onclick = () => {
+      if (confirm('Reset both scores and the match clock?')) {
+        a = 0;
+        b = 0;
+        seconds = 0;
+        running = false;
+        winner = null;
+        last = Date.now();
+        draw();
+      }
+    };
+
+    $('target').addEventListener('change', () => {
+      winner = null;
+      checkWinner();
+      draw();
+    });
+
+    $('nameA').addEventListener('input', draw);
+    $('nameB').addEventListener('input', draw);
+
+    $('awake').onclick = async () => {
+      try {
+        if (!wakeLock) {
+          wakeLock = await navigator.wakeLock.request('screen');
+          $('awake').textContent = 'Keep Awake: On';
+
+          wakeLock.addEventListener('release', () => {
+            wakeLock = null;
+            $('awake').textContent = 'Keep Awake: Off';
+          });
+        } else {
+          await wakeLock.release();
+          wakeLock = null;
+          $('awake').textContent = 'Keep Awake: Off';
+        }
+      } catch (e) {
+        alert('Keep Awake is unavailable in this browser.');
+      }
+    };
+
+    document.addEventListener('visibilitychange', async () => {
+      if (document.visibilityState === 'visible' && wakeLock) {
+        try {
+          wakeLock = await navigator.wakeLock.request('screen');
+        } catch (e) {
+          wakeLock = null;
+          $('awake').textContent = 'Keep Awake: Off';
+        }
+      }
+    });
+
+    draw();
+  </script>
 </body>
 </html>
