@@ -69,7 +69,7 @@
       font-weight: 600;
     }
 
-    input, button { font: inherit; }
+    input, button, select { font: inherit; }
 
     #target {
       width: 65px;
@@ -86,7 +86,7 @@
       display: flex;
       gap: 10px;
       padding: 0 10px;
-      height: clamp(300px, 52vh, 520px);
+      height: clamp(280px, 49vh, 480px);
     }
 
     .team {
@@ -101,7 +101,7 @@
       border-radius: 18px;
       border: 4px solid var(--team-color);
       background: var(--surface);
-      touch-action: pan-y;
+      touch-action: none;
       user-select: none;
       -webkit-user-select: none;
       overflow: hidden;
@@ -111,46 +111,30 @@
     #teamA { --team-color: #1680ff; }
     #teamB { --team-color: #ff4058; }
 
-    .team-heading {
-      position: relative;
-      width: 100%;
-      min-width: 0;
-      margin: 0 0 8px;
-      padding: 5px 0;
-      border: none;
-      background: transparent;
-      color: var(--text);
-      font-size: clamp(15px, 4vw, 20px);
-      font-weight: 800;
-      text-align: center;
-      cursor: pointer;
-      touch-action: manipulation;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .team-heading:active {
-      opacity: .75;
-      transform: scale(.98);
-    }
-
     .player-selects {
       position: relative;
       width: 100%;
       min-width: 0;
-      display: none;
+      display: flex;
+      flex-direction: row;
       align-items: flex-start;
       justify-content: space-between;
       gap: 8px;
       margin: 0 0 8px;
       flex-shrink: 0;
+      touch-action: manipulation;
     }
 
-    .team.players-selected .team-heading {
-      display: none;
-    }
-
-    .team.players-selected .player-selects {
-      display: flex;
+    .player-selects::after {
+      content: "|";
+      position: absolute;
+      left: 50%;
+      top: 5px;
+      transform: translateX(-50%);
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 400;
+      pointer-events: none;
     }
 
     .team-name {
@@ -182,24 +166,12 @@
       color: var(--text);
     }
 
-    .player-selects::after {
-      content: "|";
-      position: absolute;
-      left: 50%;
-      top: 5px;
-      transform: translateX(-50%);
-      color: var(--muted);
-      font-size: 14px;
-      font-weight: 400;
-      pointer-events: none;
-    }
-
     .score {
       color: var(--text);
-      font-size: clamp(115px, 32vw, 210px);
-      line-height: .95;
+      font-size: clamp(96px, 27vw, 180px);
+      line-height: 1;
       font-weight: 950;
-      letter-spacing: -6px;
+      letter-spacing: -5px;
       font-variant-numeric: tabular-nums;
       margin: auto 0;
     }
@@ -321,96 +293,28 @@
       font-size: 23px;
     }
 
+    #addPlayer {
+      background: var(--button);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
     .footer {
       padding: 12px 10px 22px;
       color: var(--muted);
       font-size: 11px;
     }
 
-    #playerPicker {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 100;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      background: #0009;
-    }
-
-    #playerPicker.open { display: flex; }
-
-    .picker-card {
-      width: min(100%, 340px);
-      max-height: 80vh;
-      overflow-y: auto;
-      padding: 18px;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      background: var(--surface);
-      text-align: left;
-      box-shadow: 0 18px 60px #0006;
-    }
-
-    .picker-title {
-      margin: 0 0 6px;
-      font-size: 20px;
-      font-weight: 900;
-    }
-
-    .picker-hint {
-      margin: 0 0 14px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .picker-list {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-
-    .picker-option {
-      width: 100%;
-      padding: 12px 8px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: var(--surface2);
-      color: var(--text);
-      text-align: center;
-      overflow-wrap: anywhere;
-    }
-
-    .picker-option:disabled {
-      opacity: .35;
-      cursor: not-allowed;
-    }
-
-    .picker-option.chosen {
-      border-color: var(--accent);
-      background: var(--accent);
-      color: #06111b;
-    }
-
-    .picker-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-      margin-top: 16px;
-    }
-
-    #pickerDone {
-      background: #087d49;
-      color: white;
-      border-color: #0b9d60;
-    }
+    .name-manager { display: none !important; }
 
     @media (max-height: 650px) {
       header { padding-top: 9px; padding-bottom: 7px; }
       .settings { padding-bottom: 8px; }
-      .teams { height: 44vh; min-height: 220px; }
+      .teams { height: 42vh; min-height: 210px; }
       .clock { margin-top: 10px; }
-      .score { font-size: clamp(95px, 27vw, 165px); }
+      .player-selects { margin-bottom: 5px; }
+      .team-name { padding: 5px 3px; }
+      .score { font-size: clamp(76px, 22vw, 140px); }
       .footer { padding-bottom: 10px; }
     }
 
@@ -422,7 +326,8 @@
       }
 
       .team { padding-left: 5px; padding-right: 5px; }
-      .score { font-size: clamp(90px, 26vw, 135px); }
+      .team-name { font-size: 11px; }
+      .score { font-size: clamp(72px, 21vw, 120px); }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -446,21 +351,19 @@
 
   <main>
     <div class="teams">
-      <section id="teamA" class="team" aria-label="Team A">
-        <button id="headingA" class="team-heading" type="button">Team A</button>
+      <section id="teamA" class="team" aria-label="Blue court">
         <div class="player-selects">
-          <select id="nameA1" class="team-name" aria-label="Team A first player"></select>
-          <select id="nameA2" class="team-name" aria-label="Team A second player"></select>
+          <select id="nameA1" class="team-name" aria-label="Blue team player 1"></select>
+          <select id="nameA2" class="team-name" aria-label="Blue team player 2"></select>
         </div>
         <div id="scoreA" class="score">0</div>
         <div class="match-label">MATCH POINT!</div>
       </section>
 
-      <section id="teamB" class="team" aria-label="Team B">
-        <button id="headingB" class="team-heading" type="button">Team B</button>
+      <section id="teamB" class="team" aria-label="Red court">
         <div class="player-selects">
-          <select id="nameB1" class="team-name" aria-label="Team B first player"></select>
-          <select id="nameB2" class="team-name" aria-label="Team B second player"></select>
+          <select id="nameB1" class="team-name" aria-label="Red team player 1"></select>
+          <select id="nameB2" class="team-name" aria-label="Red team player 2"></select>
         </div>
         <div id="scoreB" class="score">0</div>
         <div class="match-label">MATCH POINT!</div>
@@ -478,23 +381,12 @@
     <div class="actions">
       <button id="swap" type="button">⇄ Swap Court</button>
       <button id="resetMatch" type="button">↻ Reset Match</button>
+      <button id="addPlayer" type="button">＋ Add Player</button>
     </div>
   </main>
 
   <div class="footer">
     Tap a team panel to add a point. Swipe up to add or down to subtract.
-  </div>
-
-  <div id="playerPicker" role="dialog" aria-modal="true" aria-labelledby="pickerTitle">
-    <div class="picker-card">
-      <h2 id="pickerTitle" class="picker-title">Select players</h2>
-      <p class="picker-hint">Choose two different players.</p>
-      <div id="pickerList" class="picker-list"></div>
-      <div class="picker-actions">
-        <button id="pickerCancel" type="button">Cancel</button>
-        <button id="pickerDone" type="button">Done</button>
-      </div>
-    </div>
   </div>
 
   <script>
@@ -512,9 +404,15 @@
       };
 
       const DEFAULT_NAMES = [
-        'Ching', 'Dayang', 'Ee', 'Gadi',
-        'Igat', 'Jessica', 'Lulong', 'Via'
+        'A', 'B', 'Team',
+        'Ching', 'Ee', 'Gadi', 'Igat',
+        'Jessica', 'Lulong', 'Via', 'Dayang'
       ];
+
+      // Special shortcut names:
+      // Team is available only in Player 1 slots.
+      // A and B are available only in Player 2 slots.
+      const SPECIAL_NAMES = new Set(['Team', 'A', 'B']);
 
       function read(key, fallback) {
         try {
@@ -545,6 +443,7 @@
       if (!Array.isArray(names)) {
         const v2 = readJSON('scoreboardTeamNames_v2', null);
         const v1 = readJSON('scoreboardTeamNames_v1', null);
+
         names = Array.isArray(v2) ? v2 :
                 Array.isArray(v1) ? v1 : [...DEFAULT_NAMES];
       }
@@ -554,18 +453,22 @@
           .filter(name => typeof name === 'string')
           .map(name => name.trim())
           .filter(name => name && name.toLowerCase() !== 'naz')
-      )].sort((x, y) =>
+      )];
+
+      if (names.length < 4) {
+        names = [...DEFAULT_NAMES];
+      }
+
+      // Add shortcut names to existing saved lists without duplicates.
+      ['A', 'B', 'Team'].forEach(name => {
+        if (!names.some(n => n.toLowerCase() === name.toLowerCase())) {
+          names.push(name);
+        }
+      });
+
+      names.sort((x, y) =>
         x.localeCompare(y, undefined, { sensitivity: 'base' })
       );
-
-      if (names.length < 4) names = [...DEFAULT_NAMES];
-
-      let selected = {
-        a1: read(STORAGE.a1, ''),
-        a2: read(STORAGE.a2, ''),
-        b1: read(STORAGE.b1, ''),
-        b2: read(STORAGE.b2, '')
-      };
 
       let a = 0;
       let b = 0;
@@ -574,8 +477,13 @@
       let runStartedAt = 0;
       let winner = null;
       let audioContext = null;
-      let pickerSide = 'a';
-      let draftPlayers = [];
+
+      let selected = {
+        a1: read(STORAGE.a1, 'Team'),
+        a2: read(STORAGE.a2, 'A'),
+        b1: read(STORAGE.b1, 'Team'),
+        b2: read(STORAGE.b2, 'B')
+      };
 
       let target = Math.max(
         1,
@@ -585,12 +493,41 @@
       let theme = read(STORAGE.theme, 'dark');
       $('target').value = target;
 
-      function pairName(side) {
-        const first = selected[side + '1'];
-        const second = selected[side + '2'];
+      function isPlayer1(key) {
+        return key.endsWith('1');
+      }
 
-        if (first && second) return first + ' & ' + second;
-        return side === 'a' ? 'Team A' : 'Team B';
+      function isAllowedInSlot(name, key) {
+        if (name === 'Team') return isPlayer1(key);
+        if (name === 'A' || name === 'B') return !isPlayer1(key);
+        return true;
+      }
+
+      function uniqueName(preferred, excluded = [], key = 'a1') {
+        if (
+          names.includes(preferred) &&
+          isAllowedInSlot(preferred, key) &&
+          (preferred === 'Team' || !excluded.includes(preferred))
+        ) {
+          return preferred;
+        }
+
+        return names.find(name =>
+          isAllowedInSlot(name, key) &&
+          (name === 'Team' || !excluded.includes(name))
+        ) || '';
+      }
+
+      function normalizeSelections() {
+        const next = {};
+
+        ['a1', 'a2', 'b1', 'b2'].forEach(key => {
+          const excluded = Object.values(next);
+
+          next[key] = uniqueName(selected[key], excluded, key);
+        });
+
+        selected = next;
       }
 
       function saveSelections() {
@@ -599,172 +536,80 @@
         });
       }
 
-      function allOtherSelections(side) {
-        return Object.entries(selected)
-          .filter(([key]) => key[0] !== side)
-          .map(([, name]) => name)
-          .filter(Boolean);
+      function pairName(side) {
+        return side === 'a'
+          ? `${selected.a1} & ${selected.a2}`
+          : `${selected.b1} & ${selected.b2}`;
       }
 
       function populateSelect(id, key) {
         const select = $(id);
-        const current = selected[key];
+
         const used = Object.entries(selected)
           .filter(([otherKey]) => otherKey !== key)
-          .map(([, name]) => name)
-          .filter(Boolean);
+          .map(([, name]) => name);
 
         select.innerHTML = '';
 
-        const placeholder = document.createElement('option');
-        placeholder.value = '';
-        placeholder.textContent = 'Choose';
-        placeholder.disabled = true;
-        select.appendChild(placeholder);
-
         names.forEach(name => {
+          if (!isAllowedInSlot(name, key)) return;
+
           const option = document.createElement('option');
           option.value = name;
           option.textContent = name;
-          option.disabled = used.includes(name) && name !== current;
+
+          // Team may be used by both teams at once.
+          // All other selected names remain unique.
+          option.disabled =
+            name !== 'Team' &&
+            used.includes(name) &&
+            name !== selected[key];
+
           select.appendChild(option);
         });
 
-        select.value = current || '';
+        select.value = selected[key];
       }
 
       function populateAllSelects() {
+        normalizeSelections();
+
         populateSelect('nameA1', 'a1');
         populateSelect('nameA2', 'a2');
         populateSelect('nameB1', 'b1');
         populateSelect('nameB2', 'b2');
+
         saveSelections();
-        updateHeadings();
       }
 
-      function updateHeadings() {
-        $('headingA').textContent =
-          selected.a1 && selected.a2 ? pairName('a') : 'Team A';
+      function onSelectionChange(key, id) {
+        const value = $(id).value;
 
-        $('headingB').textContent =
-          selected.b1 && selected.b2 ? pairName('b') : 'Team B';
-
-        $('teamA').classList.toggle(
-          'players-selected',
-          Boolean(selected.a1 && selected.a2)
+        const used = Object.entries(selected).some(
+          ([otherKey, name]) =>
+            otherKey !== key &&
+            name === value &&
+            value !== 'Team'
         );
 
-        $('teamB').classList.toggle(
-          'players-selected',
-          Boolean(selected.b1 && selected.b2)
-        );
-      }
+        if (!isAllowedInSlot(value, key) || used) {
+          populateAllSelects();
+          return;
+        }
 
-      function openPicker(side) {
-        pickerSide = side;
-        draftPlayers = [
-          selected[side + '1'] || '',
-          selected[side + '2'] || ''
-        ];
-
-        $('pickerTitle').textContent =
-          side === 'a' ? 'Select Team A players' : 'Select Team B players';
-
-        renderPicker();
-        $('playerPicker').classList.add('open');
-      }
-
-      function renderPicker() {
-        const list = $('pickerList');
-        list.innerHTML = '';
-
-        names.forEach(name => {
-          const button = document.createElement('button');
-          button.type = 'button';
-          button.className = 'picker-option';
-          button.textContent = name;
-
-          const chosenIndex = draftPlayers.indexOf(name);
-          if (chosenIndex !== -1) {
-            button.classList.add('chosen');
-            button.textContent = name + (chosenIndex === 0 ? '  1' : '  2');
-          }
-
-          const usedByOtherTeam = allOtherSelections(pickerSide).includes(name);
-          button.disabled = usedByOtherTeam;
-
-          button.addEventListener('click', () => {
-            const existingIndex = draftPlayers.indexOf(name);
-
-            if (existingIndex !== -1) {
-              draftPlayers[existingIndex] = '';
-            } else if (!draftPlayers[0]) {
-              draftPlayers[0] = name;
-            } else if (!draftPlayers[1]) {
-              draftPlayers[1] = name;
-            } else {
-              draftPlayers[0] = draftPlayers[1];
-              draftPlayers[1] = name;
-            }
-
-            renderPicker();
-          });
-
-          list.appendChild(button);
-        });
-
-        $('pickerDone').disabled =
-          !draftPlayers[0] || !draftPlayers[1] ||
-          draftPlayers[0] === draftPlayers[1];
-      }
-
-      function closePicker() {
-        $('playerPicker').classList.remove('open');
-      }
-
-      $('headingA').addEventListener('click', () => openPicker('a'));
-      $('headingB').addEventListener('click', () => openPicker('b'));
-
-      $('pickerCancel').addEventListener('click', closePicker);
-
-      $('playerPicker').addEventListener('click', event => {
-        if (event.target === $('playerPicker')) closePicker();
-      });
-
-      $('pickerDone').addEventListener('click', () => {
-        if (
-          !draftPlayers[0] ||
-          !draftPlayers[1] ||
-          draftPlayers[0] === draftPlayers[1]
-        ) return;
-
-        selected[pickerSide + '1'] = draftPlayers[0];
-        selected[pickerSide + '2'] = draftPlayers[1];
-
+        selected[key] = value;
         populateAllSelects();
-        closePicker();
         draw();
-      });
+      }
 
       [
-        ['nameA1', 'a1'], ['nameA2', 'a2'],
-        ['nameB1', 'b1'], ['nameB2', 'b2']
+        ['nameA1', 'a1'],
+        ['nameA2', 'a2'],
+        ['nameB1', 'b1'],
+        ['nameB2', 'b2']
       ].forEach(([id, key]) => {
         $(id).addEventListener('change', () => {
-          const newName = $(id).value;
-
-          const duplicate = Object.entries(selected).some(
-            ([otherKey, name]) => otherKey !== key && name === newName
-          );
-
-          if (duplicate) {
-            populateAllSelects();
-            return;
-          }
-
-          selected[key] = newName;
-          populateAllSelects();
-          draw();
+          onSelectionChange(key, id);
         });
       });
 
@@ -776,6 +621,7 @@
 
       function formatTime(milliseconds) {
         const total = Math.floor(milliseconds / 1000);
+
         return String(Math.floor(total / 60)).padStart(2, '0') + ':' +
           String(total % 60).padStart(2, '0');
       }
@@ -805,8 +651,12 @@
               oscillator.frequency.value = frequency;
 
               gain.gain.setValueAtTime(0.0001, startAt);
-              gain.gain.exponentialRampToValueAtTime(0.14, startAt + 0.025);
-              gain.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.13);
+              gain.gain.exponentialRampToValueAtTime(
+                0.14, startAt + 0.025
+              );
+              gain.gain.exponentialRampToValueAtTime(
+                0.0001, startAt + 0.13
+              );
 
               oscillator.connect(gain);
               gain.connect(audioContext.destination);
@@ -837,18 +687,17 @@
         $('scoreB').textContent = b;
         $('time').textContent = formatTime(getElapsedMs());
         $('start').textContent = running ? 'Ⅱ Pause' : '▶ Start';
+        $('target').value = target;
 
         $('teamA').classList.toggle('won', winner === 'a');
         $('teamB').classList.toggle('won', winner === 'b');
 
         $('teamA').classList.toggle(
-          'match-point',
-          !winner && a === target - 1
+          'match-point', !winner && a === target - 1
         );
 
         $('teamB').classList.toggle(
-          'match-point',
-          !winner && b === target - 1
+          'match-point', !winner && b === target - 1
         );
 
         const banner = $('winner');
@@ -924,6 +773,7 @@
           const dx = event.clientX - start.x;
           const dy = event.clientY - start.y;
           const duration = Date.now() - start.time;
+
           start = null;
 
           if (event.target.closest('select, input, button')) return;
@@ -970,19 +820,20 @@
       });
 
       $('swap').addEventListener('click', () => {
-        [a, b] = [b, a];
-
         const old = { ...selected };
-        selected.a1 = old.b1;
-        selected.a2 = old.b2;
-        selected.b1 = old.a1;
-        selected.b2 = old.a2;
 
         const colorA = getComputedStyle($('teamA'))
           .getPropertyValue('--team-color').trim();
 
         const colorB = getComputedStyle($('teamB'))
           .getPropertyValue('--team-color').trim();
+
+        selected.a1 = old.b1;
+        selected.a2 = old.b2;
+        selected.b1 = old.a1;
+        selected.b2 = old.a2;
+
+        [a, b] = [b, a];
 
         $('teamA').style.setProperty('--team-color', colorB);
         $('teamB').style.setProperty('--team-color', colorA);
@@ -1014,6 +865,7 @@
           : 21;
 
         save(STORAGE.target, String(target));
+
         winner = null;
         checkWinner();
         draw();
@@ -1042,6 +894,44 @@
         applyTheme();
       });
 
+      $('addPlayer').addEventListener('click', () => {
+        const entry = prompt('Enter the new player name:');
+        if (entry === null) return;
+
+        const name = entry.trim();
+
+        if (!name) {
+          alert('Enter a player name.');
+          return;
+        }
+
+        if (name.toLowerCase() === 'naz') {
+          alert('That name cannot be added.');
+          return;
+        }
+
+        if (SPECIAL_NAMES.has(name)) {
+          alert('A, B, and Team are reserved shortcut names.');
+          return;
+        }
+
+        if (names.some(n => n.toLowerCase() === name.toLowerCase())) {
+          alert('That player is already on the list.');
+          return;
+        }
+
+        names.push(name);
+
+        names.sort((x, y) =>
+          x.localeCompare(y, undefined, { sensitivity: 'base' })
+        );
+
+        save(STORAGE.names, JSON.stringify(names));
+        populateAllSelects();
+      });
+
+      save(STORAGE.names, JSON.stringify(names));
+      normalizeSelections();
       applyTheme();
       populateAllSelects();
       draw();
