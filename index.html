@@ -33,7 +33,9 @@
       --button: #e0e7f0;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
@@ -42,8 +44,8 @@
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
       text-align: center;
-      transition: background .25s, color .25s;
       overflow-x: hidden;
+      transition: background .25s, color .25s;
     }
 
     header {
@@ -68,9 +70,11 @@
       font-weight: 600;
     }
 
-    input, button { font: inherit; }
+    input, button {
+      font: inherit;
+    }
 
-    input[type="number"] {
+    #target {
       width: 65px;
       padding: 8px;
       color: var(--text);
@@ -89,7 +93,6 @@
     }
 
     .team {
-      --team-color: #1680ff;
       flex: 1;
       min-width: 0;
       display: flex;
@@ -98,11 +101,8 @@
       align-items: center;
       padding: 12px 7px;
       border-radius: 18px;
-      border: 1px solid color-mix(in srgb, var(--team-color), transparent 35%);
-      background:
-        radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--team-color), transparent 79%), transparent 70%),
-        var(--surface);
-      box-shadow: inset 0 0 24px color-mix(in srgb, var(--team-color), transparent 94%);
+      border: 1px solid var(--team-color);
+      background: var(--surface);
       touch-action: none;
       user-select: none;
       -webkit-user-select: none;
@@ -110,25 +110,35 @@
       transition: border-color .2s, box-shadow .2s;
     }
 
+    #teamA {
+      --team-color: #1680ff;
+    }
+
+    #teamB {
+      --team-color: #ff4058;
+    }
+
     .team-name {
       width: 100%;
       min-width: 0;
       padding: 7px 0;
-      margin-bottom: 12px;
+      margin-bottom: 18px;
       border: none;
-      border-bottom: 2px solid var(--team-color);
+      border-bottom: 1px solid var(--border);
       border-radius: 0;
       outline: none;
       background: transparent;
       color: var(--text);
       text-align: center;
-      font-size: clamp(13px, 3.5vw, 21px);
-      font-weight: 850;
-      text-transform: uppercase;
+      font-size: clamp(15px, 4vw, 22px);
+      font-weight: 750;
+      text-transform: none;
       touch-action: manipulation;
     }
 
-    .team-name:focus { border-bottom-color: var(--accent); }
+    .team-name:focus {
+      border-bottom-color: var(--accent);
+    }
 
     .score {
       color: var(--text);
@@ -137,30 +147,6 @@
       font-weight: 950;
       letter-spacing: -4px;
       font-variant-numeric: tabular-nums;
-      text-shadow: 0 0 24px color-mix(in srgb, var(--team-color), transparent 78%);
-    }
-
-    .team-color {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 7px;
-      margin-top: 17px;
-    }
-
-    input[type="color"] {
-      width: 32px;
-      height: 28px;
-      padding: 0;
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      background: var(--surface2);
-      cursor: pointer;
-    }
-
-    .color-label {
-      color: var(--muted);
-      font-size: 10px;
     }
 
     #winner {
@@ -179,25 +165,42 @@
     }
 
     @keyframes winnerIn {
-      0% { opacity: 0; transform: scale(.65) translateY(10px); }
-      65% { opacity: 1; transform: scale(1.08) translateY(0); }
-      100% { opacity: 1; transform: scale(1); }
+      0% {
+        opacity: 0;
+        transform: scale(.65) translateY(10px);
+      }
+      65% {
+        opacity: 1;
+        transform: scale(1.08);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
 
     @keyframes winnerGlow {
-      from { text-shadow: 0 0 5px #ffc94a55; }
-      to { text-shadow: 0 0 24px #ffc94acc; }
+      from {
+        text-shadow: 0 0 5px #ffc94a55;
+      }
+      to {
+        text-shadow: 0 0 24px #ffc94acc;
+      }
     }
 
     .team.won {
       border: 3px solid #ffd66b;
-      box-shadow: 0 0 22px #ffd66b44, inset 0 0 30px #ffd66b12;
+      box-shadow: 0 0 18px #ffd66b44;
       animation: winnerPulse 1.4s ease-in-out infinite alternate;
     }
 
     @keyframes winnerPulse {
-      from { box-shadow: 0 0 8px #ffd66b33; }
-      to { box-shadow: 0 0 26px #ffd66b77; }
+      from {
+        box-shadow: 0 0 8px #ffd66b33;
+      }
+      to {
+        box-shadow: 0 0 26px #ffd66b77;
+      }
     }
 
     .clock {
@@ -231,7 +234,9 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    button:active { transform: scale(.97); }
+    button:active {
+      transform: scale(.97);
+    }
 
     #start {
       min-width: 112px;
@@ -246,7 +251,9 @@
       border-color: #d13e4d;
     }
 
-    #themeToggle { color: var(--accent); }
+    #themeToggle {
+      color: var(--accent);
+    }
 
     .footer {
       padding: 12px 10px 22px;
@@ -255,12 +262,31 @@
     }
 
     @media (max-height: 650px) {
-      header { padding-top: 9px; padding-bottom: 7px; }
-      .settings { padding-bottom: 8px; }
-      .teams { height: 42vh; min-height: 210px; }
-      .clock { margin-top: 10px; }
-      .team-color { margin-top: 9px; }
-      .footer { padding-bottom: 10px; }
+      header {
+        padding-top: 9px;
+        padding-bottom: 7px;
+      }
+
+      .settings {
+        padding-bottom: 8px;
+      }
+
+      .teams {
+        height: 42vh;
+        min-height: 210px;
+      }
+
+      .clock {
+        margin-top: 10px;
+      }
+
+      .team-name {
+        margin-bottom: 10px;
+      }
+
+      .footer {
+        padding-bottom: 10px;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -284,28 +310,36 @@
 
   <main>
     <div class="teams">
-      <section id="teamA" class="team" style="--team-color:#1680ff" aria-label="Team A score panel">
-        <input id="nameA" class="team-name" type="text" value="TEAM A" maxlength="18" aria-label="Team A name">
+      <section id="teamA" class="team" aria-label="Team A score panel">
+        <input
+          id="nameA"
+          class="team-name"
+          type="text"
+          value="Team A"
+          maxlength="18"
+          aria-label="Team A name"
+          autocomplete="off"
+        >
         <div id="scoreA" class="score">0</div>
-        <div class="team-color">
-          <span class="color-label">TEAM COLOR</span>
-          <input id="colorA" type="color" value="#1680ff" aria-label="Team A color">
-        </div>
       </section>
 
-      <section id="teamB" class="team" style="--team-color:#ff4058" aria-label="Team B score panel">
-        <input id="nameB" class="team-name" type="text" value="TEAM B" maxlength="18" aria-label="Team B name">
+      <section id="teamB" class="team" aria-label="Team B score panel">
+        <input
+          id="nameB"
+          class="team-name"
+          type="text"
+          value="Team B"
+          maxlength="18"
+          aria-label="Team B name"
+          autocomplete="off"
+        >
         <div id="scoreB" class="score">0</div>
-        <div class="team-color">
-          <span class="color-label">TEAM COLOR</span>
-          <input id="colorB" type="color" value="#ff4058" aria-label="Team B color">
-        </div>
       </section>
     </div>
 
     <div id="winner" role="status" aria-live="polite"></div>
 
-    <div id="time" class="clock">00:00</div>
+    <div id="time" class="clock" aria-label="Elapsed match time">00:00</div>
 
     <div class="controls">
       <button id="start" type="button">▶ Start</button>
@@ -319,21 +353,24 @@
     </div>
   </main>
 
-  <div class="footer">Tap or swipe vertically on a team panel to change its score.</div>
+  <div class="footer">
+    Tap a team panel to add a point. Swipe up to add or down to subtract.
+  </div>
 
   <script>
     const $ = id => document.getElementById(id);
 
     let a = 0;
     let b = 0;
-    let seconds = 0;
+    let elapsedMs = 0;
     let running = false;
-    let last = Date.now();
+    let runStartedAt = 0;
     let wakeLock = null;
     let winner = null;
 
     function getTarget() {
       const value = Number($('target').value);
+
       return Number.isFinite(value) && value >= 1
         ? Math.floor(value)
         : 21;
@@ -341,29 +378,50 @@
 
     function teamName(side) {
       const value = $(side === 'a' ? 'nameA' : 'nameB').value.trim();
-      return value || (side === 'a' ? 'TEAM A' : 'TEAM B');
+
+      return value || (side === 'a' ? 'Team A' : 'Team B');
+    }
+
+    function getElapsedMs() {
+      if (!running) return elapsedMs;
+
+      return elapsedMs + Math.max(0, Date.now() - runStartedAt);
+    }
+
+    function formatTime(milliseconds) {
+      const totalSeconds = Math.floor(milliseconds / 1000);
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+
+      return String(minutes).padStart(2, '0') + ':' +
+             String(seconds).padStart(2, '0');
+    }
+
+    function pauseClock() {
+      if (!running) return;
+
+      elapsedMs = getElapsedMs();
+      running = false;
     }
 
     function checkWinner() {
       if (winner) return;
 
-      if (a >= getTarget()) winner = 'a';
-      else if (b >= getTarget()) winner = 'b';
+      if (a >= getTarget()) {
+        winner = 'a';
+      } else if (b >= getTarget()) {
+        winner = 'b';
+      }
 
       if (winner) {
-        running = false;
-        last = Date.now();
+        pauseClock();
       }
     }
 
     function draw() {
       $('scoreA').textContent = a;
       $('scoreB').textContent = b;
-
-      $('time').textContent =
-        String(Math.floor(seconds / 60)).padStart(2, '0') + ':' +
-        String(seconds % 60).padStart(2, '0');
-
+      $('time').textContent = formatTime(getElapsedMs());
       $('start').textContent = running ? 'Ⅱ Pause' : '▶ Start';
 
       $('teamA').classList.toggle('won', winner === 'a');
@@ -372,9 +430,10 @@
       const banner = $('winner');
 
       if (winner) {
-        const newText = '🏆 ' + teamName(winner) + ' WINS!';
-        if (banner.textContent !== newText) {
-          banner.textContent = newText;
+        const message = '🏆 ' + teamName(winner) + ' WINS!';
+
+        if (banner.textContent !== message) {
+          banner.textContent = message;
           banner.classList.remove('show');
           void banner.offsetWidth;
           banner.classList.add('show');
@@ -390,8 +449,11 @@
     function change(side, delta) {
       if (winner) return;
 
-      if (side === 'a') a = Math.max(0, a + delta);
-      else b = Math.max(0, b + delta);
+      if (side === 'a') {
+        a = Math.max(0, a + delta);
+      } else {
+        b = Math.max(0, b + delta);
+      }
 
       checkWinner();
       draw();
@@ -418,6 +480,7 @@
         const dx = event.clientX - start.x;
         const dy = event.clientY - start.y;
         const duration = Date.now() - start.time;
+
         start = null;
 
         if (Math.abs(dy) > 25 && Math.abs(dy) > Math.abs(dx)) {
@@ -439,62 +502,57 @@
     setupSwipe('teamA', 'a');
     setupSwipe('teamB', 'b');
 
-    $('start').onclick = () => {
+    $('start').addEventListener('click', () => {
       if (winner) return;
-      running = !running;
-      last = Date.now();
-      draw();
-    };
-
-    setInterval(() => {
-      const now = Date.now();
 
       if (running) {
-        seconds += Math.max(0, Math.floor((now - last) / 1000));
+        pauseClock();
+      } else {
+        runStartedAt = Date.now();
+        running = true;
       }
 
-      last = now;
       draw();
-    }, 250);
+    });
 
-    $('resetClock').onclick = () => {
+    // Refresh the display every 100 milliseconds.
+    // Elapsed time is calculated from timestamps to avoid losing seconds.
+    setInterval(draw, 100);
+
+    $('resetClock').addEventListener('click', () => {
       running = false;
-      seconds = 0;
-      last = Date.now();
+      elapsedMs = 0;
+      runStartedAt = 0;
       draw();
-    };
+    });
 
-    $('swap').onclick = () => {
+    $('swap').addEventListener('click', () => {
       const oldNameA = $('nameA').value;
-      const oldColorA = $('colorA').value;
 
       $('nameA').value = $('nameB').value;
       $('nameB').value = oldNameA;
 
-      $('colorA').value = $('colorB').value;
-      $('colorB').value = oldColorA;
-
       [a, b] = [b, a];
 
-      applyTeamColor('a');
-      applyTeamColor('b');
-
-      if (winner) winner = winner === 'a' ? 'b' : 'a';
+      if (winner) {
+        winner = winner === 'a' ? 'b' : 'a';
+      }
 
       draw();
-    };
+    });
 
-    $('resetMatch').onclick = () => {
+    $('resetMatch').addEventListener('click', () => {
       if (confirm('Reset both scores and the match clock?')) {
         a = 0;
         b = 0;
-        seconds = 0;
+        elapsedMs = 0;
         running = false;
+        runStartedAt = 0;
         winner = null;
-        last = Date.now();
+
         draw();
       }
-    };
+    });
 
     $('target').addEventListener('change', () => {
       winner = null;
@@ -505,24 +563,20 @@
     $('nameA').addEventListener('input', draw);
     $('nameB').addEventListener('input', draw);
 
-    function applyTeamColor(side) {
-      const color = $(side === 'a' ? 'colorA' : 'colorB').value;
-      $(side === 'a' ? 'teamA' : 'teamB').style.setProperty('--team-color', color);
-    }
-
-    $('colorA').addEventListener('input', () => applyTeamColor('a'));
-    $('colorB').addEventListener('input', () => applyTeamColor('b'));
-
-    $('themeToggle').onclick = () => {
+    $('themeToggle').addEventListener('click', () => {
       document.body.classList.toggle('light');
+
       const light = document.body.classList.contains('light');
 
-      $('themeToggle').textContent = light ? '☾ Dark Mode' : '☀ Light Mode';
+      $('themeToggle').textContent = light
+        ? '☾ Dark Mode'
+        : '☀ Light Mode';
+
       document.querySelector('meta[name="theme-color"]').content =
         light ? '#f1f4f9' : '#090b10';
-    };
+    });
 
-    $('awake').onclick = async () => {
+    $('awake').addEventListener('click', async () => {
       try {
         if (!('wakeLock' in navigator)) {
           alert('Keep Awake is not supported by this browser. Try opening the scoreboard in Safari.');
@@ -543,9 +597,9 @@
           $('awake').textContent = 'Keep Awake: Off';
         }
       } catch (error) {
-        alert('Keep Awake could not be enabled. Keep the page open and check your browser settings.');
+        alert('Keep Awake could not be enabled. Check your browser support and settings.');
       }
-    };
+    });
 
     document.addEventListener('visibilitychange', async () => {
       if (document.visibilityState === 'visible' && wakeLock) {
@@ -559,8 +613,6 @@
       }
     });
 
-    applyTeamColor('a');
-    applyTeamColor('b');
     draw();
   </script>
 </body>
