@@ -6,32 +6,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#090b10">
-  <title>Scoreboard</title>
+  <meta name="theme-color" content="#030611">
+  <title>Neon Scoreboard</title>
 
   <style>
     :root {
       color-scheme: dark;
-      --bg: #090b10;
-      --surface: #11151d;
-      --surface2: #191f2a;
-      --text: #f5f7ff;
-      --muted: #8c96a8;
-      --border: #293344;
-      --accent: #38bdf8;
-      --button: #202938;
+      --bg: #030611;
+      --surface: #080d20;
+      --surface2: #0c1530;
+      --text: #f3fbff;
+      --muted: #9aa8d6;
+      --border: #24345f;
+      --accent: #00eaff;
+      --button: #101637;
+      --blue: #00d9ff;
+      --red: #ff174f;
+      --purple: #c34cff;
+      --gold: #ffd54a;
     }
 
     body.light {
       color-scheme: light;
-      --bg: #f1f4f9;
+      --bg: #edf2ff;
       --surface: #ffffff;
-      --surface2: #e8edf5;
-      --text: #131a27;
-      --muted: #657084;
-      --border: #d1d9e6;
+      --surface2: #e1eaff;
+      --text: #111a35;
+      --muted: #647397;
+      --border: #c5d2ef;
       --accent: #087fc0;
-      --button: #e0e7f0;
+      --button: #e2e9ff;
     }
 
     * { box-sizing: border-box; }
@@ -39,7 +43,10 @@
     body {
       margin: 0;
       min-height: 100vh;
-      background: var(--bg);
+      background:
+        radial-gradient(ellipse at 15% 20%, #003b8b35, transparent 42%),
+        radial-gradient(ellipse at 85% 24%, #85002c30, transparent 42%),
+        var(--bg);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
       text-align: center;
@@ -47,11 +54,24 @@
       transition: background .25s, color .25s;
     }
 
+    body.light {
+      background:
+        radial-gradient(ellipse at 10% 15%, #00c8ff14, transparent 40%),
+        radial-gradient(ellipse at 90% 20%, #ff176b10, transparent 40%),
+        var(--bg);
+    }
+
     header {
       padding: 18px 10px 12px;
-      font-size: 28px;
-      font-weight: 900;
+      font-size: clamp(23px, 6vw, 32px);
+      font-weight: 950;
       letter-spacing: 4px;
+      color: var(--text);
+      text-shadow: 0 0 8px #00eaff, 0 0 22px #006aff;
+    }
+
+    body.light header {
+      text-shadow: 0 0 8px #00aaff55;
     }
 
     .settings {
@@ -66,18 +86,19 @@
     .label {
       font-size: 13px;
       color: var(--muted);
-      font-weight: 600;
+      font-weight: 700;
     }
 
     input, button, select { font: inherit; }
 
     #target {
-      width: 65px;
+      width: 70px;
       padding: 8px;
       color: var(--text);
       background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 9px;
+      border: 1px solid var(--accent);
+      border-radius: 10px;
+      box-shadow: 0 0 10px #00eaff30;
       text-align: center;
       font-size: 16px;
     }
@@ -90,7 +111,7 @@
     }
 
     .team {
-      --team-color: #1680ff;
+      --team-color: var(--blue);
       flex: 1;
       min-width: 0;
       display: flex;
@@ -100,7 +121,11 @@
       padding: 12px 7px;
       border-radius: 18px;
       border: 8px solid var(--team-color);
-      background: var(--surface);
+      background: linear-gradient(145deg, #0b1430, #030611 75%);
+      box-shadow:
+        0 0 8px var(--team-color),
+        0 0 22px color-mix(in srgb, var(--team-color) 55%, transparent),
+        inset 0 0 18px color-mix(in srgb, var(--team-color) 15%, transparent);
       touch-action: none;
       user-select: none;
       -webkit-user-select: none;
@@ -108,8 +133,15 @@
       transition: border-color .2s, box-shadow .2s;
     }
 
-    #teamA { --team-color: #1680ff; }
-    #teamB { --team-color: #ff4058; }
+    #teamA { --team-color: var(--blue); }
+    #teamB { --team-color: var(--red); }
+
+    body.light .team {
+      background: linear-gradient(145deg, #fff, #edf3ff);
+      box-shadow:
+        0 0 7px color-mix(in srgb, var(--team-color) 50%, transparent),
+        inset 0 0 14px color-mix(in srgb, var(--team-color) 8%, transparent);
+    }
 
     .player-selects {
       position: relative;
@@ -129,11 +161,12 @@
       content: "|";
       position: absolute;
       left: 50%;
-      top: 5px;
+      top: 8px;
       transform: translateX(-50%);
-      color: var(--muted);
-      font-size: 14px;
-      font-weight: 400;
+      color: var(--team-color);
+      font-size: 17px;
+      font-weight: 900;
+      text-shadow: 0 0 8px var(--team-color);
       pointer-events: none;
     }
 
@@ -143,47 +176,63 @@
       display: block;
       width: 50%;
       min-width: 0;
-      padding: 5px 3px;
-      border: none;
-      border-bottom: 1px solid transparent;
-      border-radius: 0;
+      padding: 7px 15px 7px 3px;
+      border: 1px solid color-mix(in srgb, var(--team-color) 65%, transparent);
+      border-radius: 9px;
       outline: none;
-      background: transparent;
-      color: var(--text);
+      background: #05091a;
+      color: #f3fbff;
       text-align: center;
       text-align-last: center;
       font-size: clamp(11px, 3.2vw, 16px);
       font-weight: 750;
+      box-shadow: 0 0 10px color-mix(in srgb, var(--team-color) 25%, transparent);
       touch-action: manipulation;
     }
 
+    body.light .team-name {
+      background: #fff;
+      color: #111a35;
+    }
+
     .team-name:focus {
-      border-bottom-color: var(--accent);
+      border-color: var(--team-color);
+      box-shadow: 0 0 14px var(--team-color);
     }
 
     .team-name option {
-      background: var(--surface);
-      color: var(--text);
+      background: #080d20;
+      color: #f3fbff;
     }
 
     .score {
-      color: var(--text);
+      color: #fff;
       font-size: clamp(96px, 27vw, 180px);
       line-height: 1;
       font-weight: 950;
       letter-spacing: -5px;
       font-variant-numeric: tabular-nums;
       margin: auto 0;
+      text-shadow:
+        0 0 8px var(--team-color),
+        0 0 24px var(--team-color),
+        0 0 48px color-mix(in srgb, var(--team-color) 65%, transparent);
+    }
+
+    body.light .score {
+      color: var(--team-color);
+      text-shadow: 0 0 10px color-mix(in srgb, var(--team-color) 40%, transparent);
     }
 
     .match-label {
       display: none;
-      color: #ffd66b;
+      color: var(--gold);
       font-size: 12px;
       font-weight: 950;
-      letter-spacing: 1px;
+      letter-spacing: 2px;
       margin-top: 8px;
       margin-bottom: 8px;
+      text-shadow: 0 0 10px #ffbf00;
     }
 
     .team.match-point {
@@ -193,33 +242,39 @@
     .team.match-point .match-label { display: block; }
 
     .team.won {
-      border: 8px solid #ffd66b;
-      box-shadow: 0 0 18px #ffd66b44;
+      border: 8px solid var(--gold);
+      box-shadow:
+        0 0 12px var(--gold),
+        0 0 30px #ffb30088,
+        inset 0 0 20px #ffd54a22;
       animation: winnerPulse 1.4s ease-in-out infinite alternate;
     }
 
     @keyframes matchPointPulse {
       from {
-        box-shadow: 0 0 5px color-mix(in srgb, var(--team-color) 25%, transparent);
+        box-shadow: 0 0 8px color-mix(in srgb, var(--team-color) 35%, transparent);
       }
       to {
-        box-shadow: 0 0 23px color-mix(in srgb, var(--team-color) 85%, transparent);
+        box-shadow:
+          0 0 15px var(--team-color),
+          0 0 35px color-mix(in srgb, var(--team-color) 70%, transparent),
+          inset 0 0 25px color-mix(in srgb, var(--team-color) 20%, transparent);
       }
     }
 
     @keyframes winnerPulse {
-      from { box-shadow: 0 0 8px #ffd66b33; }
-      to { box-shadow: 0 0 26px #ffd66b77; }
+      from { box-shadow: 0 0 8px #ffd54a66; }
+      to { box-shadow: 0 0 28px #ffd54acc, inset 0 0 20px #ffd54a22; }
     }
 
     #winner {
       display: none;
       margin: 14px 10px 4px;
       padding: 12px 8px;
-      color: #ffd66b;
+      color: var(--gold);
       font-size: clamp(20px, 5.5vw, 30px);
       font-weight: 950;
-      letter-spacing: .5px;
+      letter-spacing: 1px;
     }
 
     #winner.show {
@@ -240,12 +295,28 @@
     }
 
     .clock {
+      display: inline-block;
+      min-width: 60%;
       margin: 17px 0 10px;
+      padding: 8px 18px;
+      border: 1px solid #087dff;
+      border-radius: 14px;
+      background: #05091a;
+      color: var(--accent);
       font-size: clamp(38px, 10vw, 52px);
       line-height: 1.1;
-      font-weight: 850;
-      letter-spacing: 2px;
+      font-weight: 900;
+      letter-spacing: 3px;
       font-variant-numeric: tabular-nums;
+      text-shadow: 0 0 10px #00eaff, 0 0 30px #0077ff;
+      box-shadow: 0 0 12px #0077ff44, inset 0 0 12px #0077ff22;
+    }
+
+    body.light .clock {
+      background: #fff;
+      color: #087fc0;
+      text-shadow: none;
+      box-shadow: 0 0 10px #087fc022;
     }
 
     .controls, .actions {
@@ -259,48 +330,67 @@
 
     button {
       padding: 11px 14px;
-      border: 1px solid var(--border);
+      border: 1px solid var(--purple);
       border-radius: 10px;
-      background: var(--button);
+      background: linear-gradient(135deg, #111a3d, #080d20);
       color: var(--text);
+      box-shadow: 0 0 10px #623dff55;
       font-size: 13px;
-      font-weight: 750;
+      font-weight: 800;
       cursor: pointer;
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
+      transition: box-shadow .2s, border-color .2s;
     }
 
-    button:active { transform: scale(.97); }
+    button:active {
+      transform: scale(.97);
+      box-shadow: 0 0 18px #a855f7aa;
+    }
 
     #start {
       min-width: 112px;
-      background: #087d49;
-      color: white;
-      border-color: #0b9d60;
+      background: #032719;
+      color: #fff;
+      border-color: #00ff9d;
+      box-shadow: 0 0 14px #00ff9d66;
     }
 
-    #resetMatch {
-      display: none !important;
+    #resetClock {
+      border-color: #7565ff;
+      box-shadow: 0 0 12px #7565ff55;
     }
+
+    #swap {
+      border-color: #c34cff;
+      box-shadow: 0 0 12px #c34cff55;
+    }
+
+    #resetMatch { display: none !important; }
 
     #themeToggle {
       width: 42px;
       height: 40px;
       padding: 4px;
       color: var(--accent);
+      border-color: var(--accent);
+      box-shadow: 0 0 10px #00eaff55;
       font-size: 23px;
     }
 
     #addPlayer {
-      background: var(--button);
-      border-color: var(--accent);
-      color: var(--accent);
+      background: linear-gradient(135deg, #220b3d, #080d20);
+      border-color: #e040fb;
+      color: #f0a6ff;
+      box-shadow: 0 0 12px #e040fb55;
     }
 
     .footer {
       padding: 12px 10px 22px;
       color: var(--muted);
       font-size: 11px;
+      line-height: 1.9;
+      letter-spacing: 1px;
     }
 
     @media (max-height: 650px) {
@@ -309,7 +399,7 @@
       .teams { height: 42vh; min-height: 210px; }
       .clock { margin-top: 10px; }
       .player-selects { margin-bottom: 5px; }
-      .team-name { padding: 5px 3px; }
+      .team-name { padding: 5px 12px 5px 3px; }
       .score { font-size: clamp(76px, 22vw, 140px); }
       .footer { padding-bottom: 10px; }
     }
@@ -324,6 +414,7 @@
       .team { padding-left: 5px; padding-right: 5px; }
       .team-name { font-size: 11px; }
       .score { font-size: clamp(72px, 21vw, 120px); }
+      button { padding: 10px 11px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -340,7 +431,7 @@
   <header>SCOREBOARD</header>
 
   <div class="settings">
-    <label class="label" for="target">Target</label>
+    <label class="label" for="target">TARGET</label>
     <input id="target" type="number" min="1" max="999" value="21" inputmode="numeric">
     <button id="themeToggle" type="button" aria-label="Toggle theme">☀</button>
   </div>
@@ -382,8 +473,8 @@
   </main>
 
   <div class="footer">
-    Tap to add a point. Swipe up to add or down to subtract.
-    Hold either team panel to reset the match.
+    TAP TO ADD A POINT · SWIPE UP TO ADD · SWIPE DOWN TO SUBTRACT<br>
+    HOLD EITHER TEAM BOX TO RESET THE MATCH
   </div>
 
   <script>
@@ -451,9 +542,7 @@
           .filter(name => name && name.toLowerCase() !== 'naz')
       )];
 
-      if (names.length < 4) {
-        names = [...DEFAULT_NAMES];
-      }
+      if (names.length < 4) names = [...DEFAULT_NAMES];
 
       ['A', 'B', 'Team'].forEach(name => {
         if (!names.some(n => n.toLowerCase() === name.toLowerCase())) {
@@ -550,7 +639,7 @@
 
         select.innerHTML = '';
 
-        // Regular names are the only normal dropdown choices.
+        // Regular player names only.
         names.forEach(name => {
           if (SPECIAL_NAMES.has(name)) return;
 
@@ -561,8 +650,7 @@
           select.appendChild(option);
         });
 
-        // Preserve a currently selected shortcut as the displayed value.
-        // The hidden option does not appear in the normal dropdown list.
+        // Preserve the selected shortcut as the displayed value.
         if (SPECIAL_NAMES.has(current)) {
           const option = document.createElement('option');
           option.value = current;
@@ -577,12 +665,10 @@
 
       function populateAllSelects() {
         normalizeSelections();
-
         populateSelect('nameA1', 'a1');
         populateSelect('nameA2', 'a2');
         populateSelect('nameB1', 'b1');
         populateSelect('nameB2', 'b2');
-
         saveSelections();
       }
 
@@ -749,7 +835,6 @@
         draw();
       }
 
-      // Reset scores and clock only after confirmation.
       function resetMatch() {
         if (!confirm('Reset both scores and the match clock?')) return;
 
@@ -759,7 +844,6 @@
         running = false;
         runStartedAt = 0;
         winner = null;
-
         draw();
       }
 
@@ -791,12 +875,10 @@
           const dx = event.clientX - start.x;
           const dy = event.clientY - start.y;
           const duration = Date.now() - start.time;
-
           start = null;
 
           if (event.target.closest('select, input, button')) return;
 
-          // Long press with minimal movement resets the match.
           if (
             duration >= HOLD_DURATION &&
             Math.abs(dx) < HOLD_MOVE_LIMIT &&
@@ -806,7 +888,6 @@
             return;
           }
 
-          // Swipe up adds a point; swipe down subtracts one.
           if (Math.abs(dy) > 25 && Math.abs(dy) > Math.abs(dx)) {
             change(side, dy < 0 ? 1 : -1);
           } else if (
@@ -814,7 +895,6 @@
             Math.abs(dy) < 12 &&
             duration < HOLD_DURATION
           ) {
-            // Short tap adds a point.
             change(side, 1);
           }
         });
@@ -878,7 +958,6 @@
         draw();
       });
 
-      // Retained as a fallback handler; the button is hidden.
       $('resetMatch').addEventListener('click', resetMatch);
 
       $('target').addEventListener('change', () => {
@@ -889,7 +968,6 @@
           : 21;
 
         save(STORAGE.target, String(target));
-
         winner = null;
         checkWinner();
         draw();
@@ -908,7 +986,7 @@
         );
 
         document.querySelector('meta[name="theme-color"]').content =
-          theme === 'light' ? '#f1f4f9' : '#090b10';
+          theme === 'light' ? '#edf2ff' : '#030611';
 
         save(STORAGE.theme, theme);
       }
@@ -934,11 +1012,9 @@
           return;
         }
 
-        if (
-          [...SPECIAL_NAMES].some(
-            special => special.toLowerCase() === name.toLowerCase()
-          )
-        ) {
+        if ([...SPECIAL_NAMES].some(
+          special => special.toLowerCase() === name.toLowerCase()
+        )) {
           alert('A, B, and Team are reserved shortcut names.');
           return;
         }
@@ -949,7 +1025,6 @@
         }
 
         names.push(name);
-
         names.sort((x, y) =>
           x.localeCompare(y, undefined, { sensitivity: 'base' })
         );
