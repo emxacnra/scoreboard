@@ -33,9 +33,7 @@
       --button: #e0e7f0;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -70,9 +68,7 @@
       font-weight: 600;
     }
 
-    input, button {
-      font: inherit;
-    }
+    input, button { font: inherit; }
 
     #target {
       width: 65px;
@@ -93,6 +89,7 @@
     }
 
     .team {
+      --team-color: #1680ff;
       flex: 1;
       min-width: 0;
       display: flex;
@@ -101,7 +98,10 @@
       align-items: center;
       padding: 12px 7px;
       border-radius: 18px;
-      border: 1px solid var(--team-color);
+
+      /* Thicker colored outline */
+      border: 4px solid var(--team-color);
+
       background: var(--surface);
       touch-action: none;
       user-select: none;
@@ -110,13 +110,8 @@
       transition: border-color .2s, box-shadow .2s;
     }
 
-    #teamA {
-      --team-color: #1680ff;
-    }
-
-    #teamB {
-      --team-color: #ff4058;
-    }
+    #teamA { --team-color: #1680ff; }
+    #teamB { --team-color: #ff4058; }
 
     .team-name {
       width: 100%;
@@ -136,9 +131,7 @@
       touch-action: manipulation;
     }
 
-    .team-name:focus {
-      border-bottom-color: var(--accent);
-    }
+    .team-name:focus { border-bottom-color: var(--accent); }
 
     .score {
       color: var(--text);
@@ -161,46 +154,30 @@
 
     #winner.show {
       display: block;
-      animation: winnerIn .5s ease both, winnerGlow 1.8s ease-in-out .5s infinite alternate;
+      animation: winnerIn .5s ease both,
+                 winnerGlow 1.8s ease-in-out .5s infinite alternate;
     }
 
     @keyframes winnerIn {
-      0% {
-        opacity: 0;
-        transform: scale(.65) translateY(10px);
-      }
-      65% {
-        opacity: 1;
-        transform: scale(1.08);
-      }
-      100% {
-        opacity: 1;
-        transform: scale(1);
-      }
+      0% { opacity: 0; transform: scale(.65) translateY(10px); }
+      65% { opacity: 1; transform: scale(1.08); }
+      100% { opacity: 1; transform: scale(1); }
     }
 
     @keyframes winnerGlow {
-      from {
-        text-shadow: 0 0 5px #ffc94a55;
-      }
-      to {
-        text-shadow: 0 0 24px #ffc94acc;
-      }
+      from { text-shadow: 0 0 5px #ffc94a55; }
+      to { text-shadow: 0 0 24px #ffc94acc; }
     }
 
     .team.won {
-      border: 3px solid #ffd66b;
+      border: 4px solid #ffd66b;
       box-shadow: 0 0 18px #ffd66b44;
       animation: winnerPulse 1.4s ease-in-out infinite alternate;
     }
 
     @keyframes winnerPulse {
-      from {
-        box-shadow: 0 0 8px #ffd66b33;
-      }
-      to {
-        box-shadow: 0 0 26px #ffd66b77;
-      }
+      from { box-shadow: 0 0 8px #ffd66b33; }
+      to { box-shadow: 0 0 26px #ffd66b77; }
     }
 
     .clock {
@@ -234,9 +211,7 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    button:active {
-      transform: scale(.97);
-    }
+    button:active { transform: scale(.97); }
 
     #start {
       min-width: 112px;
@@ -251,9 +226,7 @@
       border-color: #d13e4d;
     }
 
-    #themeToggle {
-      color: var(--accent);
-    }
+    #themeToggle { color: var(--accent); }
 
     .footer {
       padding: 12px 10px 22px;
@@ -262,31 +235,12 @@
     }
 
     @media (max-height: 650px) {
-      header {
-        padding-top: 9px;
-        padding-bottom: 7px;
-      }
-
-      .settings {
-        padding-bottom: 8px;
-      }
-
-      .teams {
-        height: 42vh;
-        min-height: 210px;
-      }
-
-      .clock {
-        margin-top: 10px;
-      }
-
-      .team-name {
-        margin-bottom: 10px;
-      }
-
-      .footer {
-        padding-bottom: 10px;
-      }
+      header { padding-top: 9px; padding-bottom: 7px; }
+      .settings { padding-bottom: 8px; }
+      .teams { height: 42vh; min-height: 210px; }
+      .clock { margin-top: 10px; }
+      .team-name { margin-bottom: 10px; }
+      .footer { padding-bottom: 10px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -310,29 +264,13 @@
 
   <main>
     <div class="teams">
-      <section id="teamA" class="team" aria-label="Team A score panel">
-        <input
-          id="nameA"
-          class="team-name"
-          type="text"
-          value="Team A"
-          maxlength="18"
-          aria-label="Team A name"
-          autocomplete="off"
-        >
+      <section id="teamA" class="team" aria-label="Left court">
+        <input id="nameA" class="team-name" type="text" value="Team A" maxlength="18" aria-label="Left team name" autocomplete="off">
         <div id="scoreA" class="score">0</div>
       </section>
 
-      <section id="teamB" class="team" aria-label="Team B score panel">
-        <input
-          id="nameB"
-          class="team-name"
-          type="text"
-          value="Team B"
-          maxlength="18"
-          aria-label="Team B name"
-          autocomplete="off"
-        >
+      <section id="teamB" class="team" aria-label="Right court">
+        <input id="nameB" class="team-name" type="text" value="Team B" maxlength="18" aria-label="Right team name" autocomplete="off">
         <div id="scoreB" class="score">0</div>
       </section>
     </div>
@@ -347,7 +285,7 @@
     </div>
 
     <div class="actions">
-      <button id="swap" type="button">⇄ Swap Teams</button>
+      <button id="swap" type="button">⇄ Swap Court</button>
       <button id="resetMatch" type="button">↻ Reset Match</button>
       <button id="awake" type="button">Keep Awake: Off</button>
     </div>
@@ -370,7 +308,6 @@
 
     function getTarget() {
       const value = Number($('target').value);
-
       return Number.isFinite(value) && value >= 1
         ? Math.floor(value)
         : 21;
@@ -378,13 +315,11 @@
 
     function teamName(side) {
       const value = $(side === 'a' ? 'nameA' : 'nameB').value.trim();
-
       return value || (side === 'a' ? 'Team A' : 'Team B');
     }
 
     function getElapsedMs() {
       if (!running) return elapsedMs;
-
       return elapsedMs + Math.max(0, Date.now() - runStartedAt);
     }
 
@@ -399,7 +334,6 @@
 
     function pauseClock() {
       if (!running) return;
-
       elapsedMs = getElapsedMs();
       running = false;
     }
@@ -407,15 +341,10 @@
     function checkWinner() {
       if (winner) return;
 
-      if (a >= getTarget()) {
-        winner = 'a';
-      } else if (b >= getTarget()) {
-        winner = 'b';
-      }
+      if (a >= getTarget()) winner = 'a';
+      else if (b >= getTarget()) winner = 'b';
 
-      if (winner) {
-        pauseClock();
-      }
+      if (winner) pauseClock();
     }
 
     function draw() {
@@ -449,11 +378,8 @@
     function change(side, delta) {
       if (winner) return;
 
-      if (side === 'a') {
-        a = Math.max(0, a + delta);
-      } else {
-        b = Math.max(0, b + delta);
-      }
+      if (side === 'a') a = Math.max(0, a + delta);
+      else b = Math.max(0, b + delta);
 
       checkWinner();
       draw();
@@ -480,7 +406,6 @@
         const dx = event.clientX - start.x;
         const dy = event.clientY - start.y;
         const duration = Date.now() - start.time;
-
         start = null;
 
         if (Math.abs(dy) > 25 && Math.abs(dy) > Math.abs(dx)) {
@@ -515,8 +440,6 @@
       draw();
     });
 
-    // Refresh the display every 100 milliseconds.
-    // Elapsed time is calculated from timestamps to avoid losing seconds.
     setInterval(draw, 100);
 
     $('resetClock').addEventListener('click', () => {
@@ -528,15 +451,20 @@
 
     $('swap').addEventListener('click', () => {
       const oldNameA = $('nameA').value;
+      const oldColorA = getComputedStyle($('teamA'))
+        .getPropertyValue('--team-color').trim();
+      const oldColorB = getComputedStyle($('teamB'))
+        .getPropertyValue('--team-color').trim();
 
       $('nameA').value = $('nameB').value;
       $('nameB').value = oldNameA;
 
       [a, b] = [b, a];
 
-      if (winner) {
-        winner = winner === 'a' ? 'b' : 'a';
-      }
+      $('teamA').style.setProperty('--team-color', oldColorB);
+      $('teamB').style.setProperty('--team-color', oldColorA);
+
+      if (winner) winner = winner === 'a' ? 'b' : 'a';
 
       draw();
     });
@@ -549,7 +477,6 @@
         running = false;
         runStartedAt = 0;
         winner = null;
-
         draw();
       }
     });
@@ -568,10 +495,7 @@
 
       const light = document.body.classList.contains('light');
 
-      $('themeToggle').textContent = light
-        ? '☾ Dark Mode'
-        : '☀ Light Mode';
-
+      $('themeToggle').textContent = light ? '☾ Dark Mode' : '☀ Light Mode';
       document.querySelector('meta[name="theme-color"]').content =
         light ? '#f1f4f9' : '#090b10';
     });
