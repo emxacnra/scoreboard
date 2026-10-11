@@ -6,7 +6,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#030611">
-  <title>Neon Scoreboard v1.28</title>
+  <title>Neon Scoreboard v1.29</title>
 
   <style>
     :root {
@@ -700,7 +700,8 @@
         Math.min(999, parseInt(read(STORAGE.target, '21'), 10) || 21)
       );
 
-      let theme = read(STORAGE.theme, 'dark');
+      // Theme always starts in dark mode on page load
+      let theme = 'dark';
       // Voice always starts off on page load
       let voiceOn = false;
       $('target').value = target;
@@ -1201,7 +1202,6 @@
         document.querySelector('meta[name="theme-color"]').content =
           theme === 'light' ? '#edf2ff' : '#030611';
 
-        save(STORAGE.theme, theme);
       }
 
       function applyVoice() {
