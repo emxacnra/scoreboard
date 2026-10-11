@@ -305,8 +305,6 @@
       font-size: 11px;
     }
 
-    .name-manager { display: none !important; }
-
     @media (max-height: 650px) {
       header { padding-top: 9px; padding-bottom: 7px; }
       .settings { padding-bottom: 8px; }
@@ -409,9 +407,6 @@
         'Jessica', 'Lulong', 'Via', 'Dayang'
       ];
 
-      // Special shortcut names:
-      // Team is available only in Player 1 slots.
-      // A and B are available only in Player 2 slots.
       const SPECIAL_NAMES = new Set(['Team', 'A', 'B']);
 
       function read(key, fallback) {
@@ -459,7 +454,7 @@
         names = [...DEFAULT_NAMES];
       }
 
-      // Add shortcut names to existing saved lists without duplicates.
+      // Ensure shortcuts exist in previously saved player lists.
       ['A', 'B', 'Team'].forEach(name => {
         if (!names.some(n => n.toLowerCase() === name.toLowerCase())) {
           names.push(name);
@@ -513,8 +508,9 @@
         }
 
         return names.find(name =>
+          !SPECIAL_NAMES.has(name) &&
           isAllowedInSlot(name, key) &&
-          (name === 'Team' || !excluded.includes(name))
+          !excluded.includes(name)
         ) || '';
       }
 
@@ -523,7 +519,6 @@
 
         ['a1', 'a2', 'b1', 'b2'].forEach(key => {
           const excluded = Object.values(next);
-
           next[key] = uniqueName(selected[key], excluded, key);
         });
 
@@ -544,6 +539,7 @@
 
       function populateSelect(id, key) {
         const select = $(id);
+        const current = selected[key];
 
         const used = Object.entries(selected)
           .filter(([otherKey]) => otherKey !== key)
@@ -551,24 +547,28 @@
 
         select.innerHTML = '';
 
+        // Add regular player names only.
         names.forEach(name => {
-          if (!isAllowedInSlot(name, key)) return;
+          if (SPECIAL_NAMES.has(name)) return;
 
           const option = document.createElement('option');
           option.value = name;
           option.textContent = name;
-
-          // Team may be used by both teams at once.
-          // All other selected names remain unique.
-          option.disabled =
-            name !== 'Team' &&
-            used.includes(name) &&
-            name !== selected[key];
-
+          option.disabled = used.includes(name);
           select.appendChild(option);
         });
 
-        select.value = selected[key];
+        // Keep the currently selected shortcut visible,
+        // but do not offer it as a regular dropdown choice.
+        if (SPECIAL_NAMES.has(current)) {
+          const option = document.createElement('option');
+          option.value = current;
+          option.textContent = current;
+          option.selected = true;
+          select.insertBefore(option, select.firstChild);
+        }
+
+        select.value = current;
       }
 
       function populateAllSelects() {
