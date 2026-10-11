@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -70,7 +69,7 @@
       font-weight: 600;
     }
 
-    input, button, select { font: inherit; }
+    input, button { font: inherit; }
 
     #target {
       width: 65px;
@@ -87,7 +86,7 @@
       display: flex;
       gap: 10px;
       padding: 0 10px;
-      height: clamp(280px, 49vh, 480px);
+      height: clamp(300px, 52vh, 520px);
     }
 
     .team {
@@ -96,13 +95,13 @@
       min-width: 0;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
       padding: 12px 7px;
       border-radius: 18px;
       border: 4px solid var(--team-color);
       background: var(--surface);
-      touch-action: none;
+      touch-action: pan-y;
       user-select: none;
       -webkit-user-select: none;
       overflow: hidden;
@@ -112,71 +111,97 @@
     #teamA { --team-color: #1680ff; }
     #teamB { --team-color: #ff4058; }
 
-    .team.won {
-      border: 4px solid #ffd66b;
-      box-shadow: 0 0 18px #ffd66b44;
-      animation: winnerPulse 1.4s ease-in-out infinite alternate;
+    .team-heading {
+      position: relative;
+      width: 100%;
+      min-width: 0;
+      margin: 0 0 8px;
+      padding: 5px 0;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      font-size: clamp(15px, 4vw, 20px);
+      font-weight: 800;
+      text-align: center;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    .team.match-point {
-      animation: matchPointPulse .8s ease-in-out infinite alternate;
-    }
-
-    .team.won.match-point {
-      animation: winnerPulse 1.4s ease-in-out infinite alternate;
-    }
-
-    @keyframes matchPointPulse {
-      from { box-shadow: 0 0 5px color-mix(in srgb, var(--team-color) 25%, transparent); }
-      to { box-shadow: 0 0 23px color-mix(in srgb, var(--team-color) 85%, transparent); }
+    .team-heading:active {
+      opacity: .75;
+      transform: scale(.98);
     }
 
     .player-selects {
+      position: relative;
       width: 100%;
       min-width: 0;
+      display: none;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      margin: 0 0 8px;
+      flex-shrink: 0;
+    }
+
+    .team.players-selected .team-heading {
+      display: none;
+    }
+
+    .team.players-selected .player-selects {
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      margin-bottom: 12px;
-      touch-action: manipulation;
     }
 
     .team-name {
+      appearance: none;
+      -webkit-appearance: none;
       display: block;
-      width: 100%;
+      width: 50%;
       min-width: 0;
-      padding: 7px 1px;
+      padding: 5px 3px;
       border: none;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid transparent;
       border-radius: 0;
       outline: none;
       background: transparent;
       color: var(--text);
       text-align: center;
       text-align-last: center;
-      font-size: clamp(12px, 3.3vw, 17px);
+      font-size: clamp(11px, 3.2vw, 16px);
       font-weight: 750;
-      text-transform: none;
       touch-action: manipulation;
     }
 
-    .team-name:focus { border-bottom-color: var(--accent); }
+    .team-name:focus {
+      border-bottom-color: var(--accent);
+    }
 
     .team-name option {
       background: var(--surface);
       color: var(--text);
     }
 
-    .ampersand {
+    .player-selects::after {
+      content: "|";
+      position: absolute;
+      left: 50%;
+      top: 5px;
+      transform: translateX(-50%);
       color: var(--muted);
-      font-size: 11px;
-      font-weight: 800;
-      line-height: 1;
+      font-size: 14px;
+      font-weight: 400;
+      pointer-events: none;
     }
 
-    .pair-name {
-      display: none;
+    .score {
+      color: var(--text);
+      font-size: clamp(115px, 32vw, 210px);
+      line-height: .95;
+      font-weight: 950;
+      letter-spacing: -6px;
+      font-variant-numeric: tabular-nums;
+      margin: auto 0;
     }
 
     .match-label {
@@ -186,19 +211,33 @@
       font-weight: 950;
       letter-spacing: 1px;
       margin-top: 8px;
+      margin-bottom: 8px;
     }
 
-    .team.match-point .match-label {
-      display: block;
+    .team.match-point {
+      animation: matchPointPulse .8s ease-in-out infinite alternate;
     }
 
-    .score {
-      color: var(--text);
-      font-size: clamp(74px, 22vw, 150px);
-      line-height: 1;
-      font-weight: 950;
-      letter-spacing: -4px;
-      font-variant-numeric: tabular-nums;
+    .team.match-point .match-label { display: block; }
+
+    .team.won {
+      border: 4px solid #ffd66b;
+      box-shadow: 0 0 18px #ffd66b44;
+      animation: winnerPulse 1.4s ease-in-out infinite alternate;
+    }
+
+    @keyframes matchPointPulse {
+      from {
+        box-shadow: 0 0 5px color-mix(in srgb, var(--team-color) 25%, transparent);
+      }
+      to {
+        box-shadow: 0 0 23px color-mix(in srgb, var(--team-color) 85%, transparent);
+      }
+    }
+
+    @keyframes winnerPulse {
+      from { box-shadow: 0 0 8px #ffd66b33; }
+      to { box-shadow: 0 0 26px #ffd66b77; }
     }
 
     #winner {
@@ -226,11 +265,6 @@
     @keyframes winnerGlow {
       from { text-shadow: 0 0 5px #ffc94a55; }
       to { text-shadow: 0 0 24px #ffc94acc; }
-    }
-
-    @keyframes winnerPulse {
-      from { box-shadow: 0 0 8px #ffd66b33; }
-      to { box-shadow: 0 0 26px #ffd66b77; }
     }
 
     .clock {
@@ -293,108 +327,102 @@
       font-size: 11px;
     }
 
-    .name-manager {
-      margin: 16px 10px 0;
-      padding: 15px;
+    #playerPicker {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: #0009;
+    }
+
+    #playerPicker.open { display: flex; }
+
+    .picker-card {
+      width: min(100%, 340px);
+      max-height: 80vh;
+      overflow-y: auto;
+      padding: 18px;
       border: 1px solid var(--border);
-      border-radius: 16px;
+      border-radius: 18px;
       background: var(--surface);
       text-align: left;
+      box-shadow: 0 18px 60px #0006;
     }
 
-    .name-manager h2 {
+    .picker-title {
       margin: 0 0 6px;
-      font-size: 17px;
+      font-size: 20px;
+      font-weight: 900;
     }
 
-    .manager-help {
-      margin: 0 0 12px;
+    .picker-hint {
+      margin: 0 0 14px;
       color: var(--muted);
-      font-size: 12px;
-      line-height: 1.5;
+      font-size: 13px;
     }
 
-    .add-name-row {
-      display: flex;
+    .picker-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 8px;
-      margin-bottom: 12px;
     }
 
-    .add-name-row input {
-      min-width: 0;
-      flex: 1;
+    .picker-option {
       width: 100%;
-      padding: 10px;
+      padding: 12px 8px;
       border: 1px solid var(--border);
-      border-radius: 9px;
+      border-radius: 10px;
       background: var(--surface2);
       color: var(--text);
-      outline: none;
-      font-size: 14px;
-    }
-
-    .name-list {
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-    }
-
-    .name-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      min-width: 0;
-      padding: 7px;
-      border-radius: 9px;
-      background: var(--surface2);
-    }
-
-    .name-item .name-text {
-      flex: 1;
-      min-width: 0;
+      text-align: center;
       overflow-wrap: anywhere;
-      padding-left: 3px;
-      font-size: 13px;
-      font-weight: 650;
     }
 
-    .name-item button {
-      padding: 7px 9px;
-      font-size: 11px;
+    .picker-option:disabled {
+      opacity: .35;
+      cursor: not-allowed;
     }
 
-    .name-item .delete-name {
-      color: #ff7181;
+    .picker-option.chosen {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #06111b;
     }
 
-    .edit-name-input {
-      flex: 1;
-      min-width: 0;
-      width: 100%;
-      padding: 8px;
-      background: var(--bg);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-size: 13px;
+    .picker-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    #pickerDone {
+      background: #087d49;
+      color: white;
+      border-color: #0b9d60;
     }
 
     @media (max-height: 650px) {
       header { padding-top: 9px; padding-bottom: 7px; }
       .settings { padding-bottom: 8px; }
-      .teams { height: 42vh; min-height: 210px; }
+      .teams { height: 44vh; min-height: 220px; }
       .clock { margin-top: 10px; }
-      .player-selects { margin-bottom: 8px; }
-      .team-name { padding: 5px 1px; }
+      .score { font-size: clamp(95px, 27vw, 165px); }
       .footer { padding-bottom: 10px; }
     }
 
     @media (max-width: 360px) {
-      .teams { gap: 7px; padding-left: 7px; padding-right: 7px; }
+      .teams {
+        gap: 7px;
+        padding-left: 7px;
+        padding-right: 7px;
+      }
+
       .team { padding-left: 5px; padding-right: 5px; }
-      .team-name { font-size: 12px; }
-      .score { font-size: clamp(65px, 20vw, 110px); }
-      .name-manager { margin-left: 7px; margin-right: 7px; padding: 11px; }
+      .score { font-size: clamp(90px, 26vw, 135px); }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -418,20 +446,20 @@
 
   <main>
     <div class="teams">
-      <section id="teamA" class="team" aria-label="Left court">
+      <section id="teamA" class="team" aria-label="Team A">
+        <button id="headingA" class="team-heading" type="button">Team A</button>
         <div class="player-selects">
           <select id="nameA1" class="team-name" aria-label="Team A first player"></select>
-          <span class="ampersand">&amp;</span>
           <select id="nameA2" class="team-name" aria-label="Team A second player"></select>
         </div>
         <div id="scoreA" class="score">0</div>
         <div class="match-label">MATCH POINT!</div>
       </section>
 
-      <section id="teamB" class="team" aria-label="Right court">
+      <section id="teamB" class="team" aria-label="Team B">
+        <button id="headingB" class="team-heading" type="button">Team B</button>
         <div class="player-selects">
           <select id="nameB1" class="team-name" aria-label="Team B first player"></select>
-          <span class="ampersand">&amp;</span>
           <select id="nameB2" class="team-name" aria-label="Team B second player"></select>
         </div>
         <div id="scoreB" class="score">0</div>
@@ -440,7 +468,6 @@
     </div>
 
     <div id="winner" role="status" aria-live="polite"></div>
-
     <div id="time" class="clock" aria-label="Elapsed match time">00:00</div>
 
     <div class="controls">
@@ -452,24 +479,22 @@
       <button id="swap" type="button">⇄ Swap Court</button>
       <button id="resetMatch" type="button">↻ Reset Match</button>
     </div>
-
-    <section class="name-manager">
-      <h2>Team Name List</h2>
-      <p class="manager-help">
-        Add, edit, or delete player names here. Choose two different names for each team above.
-      </p>
-
-      <form id="addNameForm" class="add-name-row">
-        <input id="newName" type="text" maxlength="30" placeholder="Enter player name" autocomplete="off" required>
-        <button type="submit">Add</button>
-      </form>
-
-      <div id="nameList" class="name-list"></div>
-    </section>
   </main>
 
   <div class="footer">
     Tap a team panel to add a point. Swipe up to add or down to subtract.
+  </div>
+
+  <div id="playerPicker" role="dialog" aria-modal="true" aria-labelledby="pickerTitle">
+    <div class="picker-card">
+      <h2 id="pickerTitle" class="picker-title">Select players</h2>
+      <p class="picker-hint">Choose two different players.</p>
+      <div id="pickerList" class="picker-list"></div>
+      <div class="picker-actions">
+        <button id="pickerCancel" type="button">Cancel</button>
+        <button id="pickerDone" type="button">Done</button>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -477,7 +502,7 @@
       const $ = id => document.getElementById(id);
 
       const STORAGE = {
-        names: 'scoreboardTeamNames_v2',
+        names: 'scoreboardTeamNameList_v3',
         a1: 'scoreboardSelectedA1_v1',
         a2: 'scoreboardSelectedA2_v1',
         b1: 'scoreboardSelectedB1_v1',
@@ -487,8 +512,8 @@
       };
 
       const DEFAULT_NAMES = [
-        'Ching', 'Via', 'Gadi', 'Ee', 'Jessica',
-        'Igat', 'Lulong', 'Dayang', 'Naz'
+        'Ching', 'Dayang', 'Ee', 'Gadi',
+        'Igat', 'Jessica', 'Lulong', 'Via'
       ];
 
       function read(key, fallback) {
@@ -518,20 +543,29 @@
       let names = readJSON(STORAGE.names, null);
 
       if (!Array.isArray(names)) {
-        // Migrate the previous version's team-name list, if one exists.
-        const oldNames = readJSON('scoreboardTeamNames_v1', null);
-        names = Array.isArray(oldNames) && oldNames.length
-          ? oldNames
-          : [...DEFAULT_NAMES];
+        const v2 = readJSON('scoreboardTeamNames_v2', null);
+        const v1 = readJSON('scoreboardTeamNames_v1', null);
+        names = Array.isArray(v2) ? v2 :
+                Array.isArray(v1) ? v1 : [...DEFAULT_NAMES];
       }
 
       names = [...new Set(
-        names.filter(name => typeof name === 'string')
+        names
+          .filter(name => typeof name === 'string')
           .map(name => name.trim())
-          .filter(Boolean)
-      )];
+          .filter(name => name && name.toLowerCase() !== 'naz')
+      )].sort((x, y) =>
+        x.localeCompare(y, undefined, { sensitivity: 'base' })
+      );
 
-      if (!names.length) names = [...DEFAULT_NAMES];
+      if (names.length < 4) names = [...DEFAULT_NAMES];
+
+      let selected = {
+        a1: read(STORAGE.a1, ''),
+        a2: read(STORAGE.a2, ''),
+        b1: read(STORAGE.b1, ''),
+        b2: read(STORAGE.b2, '')
+      };
 
       let a = 0;
       let b = 0;
@@ -539,16 +573,9 @@
       let running = false;
       let runStartedAt = 0;
       let winner = null;
-      let timerInterval = null;
       let audioContext = null;
-      let editingName = null;
-
-      let selected = {
-        a1: read(STORAGE.a1, 'Ching'),
-        a2: read(STORAGE.a2, 'Via'),
-        b1: read(STORAGE.b1, 'Gadi'),
-        b2: read(STORAGE.b2, 'Ee')
-      };
+      let pickerSide = 'a';
+      let draftPlayers = [];
 
       let target = Math.max(
         1,
@@ -556,101 +583,201 @@
       );
 
       let theme = read(STORAGE.theme, 'dark');
-
       $('target').value = target;
 
-      function uniqueName(preferred, excluded = []) {
-        if (names.includes(preferred) && !excluded.includes(preferred)) {
-          return preferred;
-        }
-        return names.find(name => !excluded.includes(name)) || names[0] || '';
-      }
+      function pairName(side) {
+        const first = selected[side + '1'];
+        const second = selected[side + '2'];
 
-      function normalizeSelections() {
-        if (!names.length) names = [...DEFAULT_NAMES];
-
-        selected.a1 = uniqueName(selected.a1);
-        selected.a2 = uniqueName(selected.a2, [selected.a1]);
-        selected.b1 = uniqueName(selected.b1, [selected.a1, selected.a2]);
-        selected.b2 = uniqueName(selected.b2, [
-          selected.a1, selected.a2, selected.b1
-        ]);
+        if (first && second) return first + ' & ' + second;
+        return side === 'a' ? 'Team A' : 'Team B';
       }
 
       function saveSelections() {
-        Object.keys(selected).forEach(key => save(STORAGE[key], selected[key]));
+        Object.keys(selected).forEach(key => {
+          save(STORAGE[key], selected[key]);
+        });
       }
 
-      function pairName(side) {
-        return side === 'a'
-          ? `${selected.a1} & ${selected.a2}`
-          : `${selected.b1} & ${selected.b2}`;
+      function allOtherSelections(side) {
+        return Object.entries(selected)
+          .filter(([key]) => key[0] !== side)
+          .map(([, name]) => name)
+          .filter(Boolean);
       }
 
       function populateSelect(id, key) {
         const select = $(id);
-        const otherNames = Object.entries(selected)
+        const current = selected[key];
+        const used = Object.entries(selected)
           .filter(([otherKey]) => otherKey !== key)
-          .map(([, name]) => name);
+          .map(([, name]) => name)
+          .filter(Boolean);
 
         select.innerHTML = '';
+
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = 'Choose';
+        placeholder.disabled = true;
+        select.appendChild(placeholder);
 
         names.forEach(name => {
           const option = document.createElement('option');
           option.value = name;
           option.textContent = name;
-          option.disabled = otherNames.includes(name) && name !== selected[key];
+          option.disabled = used.includes(name) && name !== current;
           select.appendChild(option);
         });
 
-        select.value = selected[key];
+        select.value = current || '';
       }
 
       function populateAllSelects() {
-        normalizeSelections();
-
         populateSelect('nameA1', 'a1');
         populateSelect('nameA2', 'a2');
         populateSelect('nameB1', 'b1');
         populateSelect('nameB2', 'b2');
-
         saveSelections();
+        updateHeadings();
       }
 
-      function onSelectionChange(key, id) {
-        const newName = $(id).value;
+      function updateHeadings() {
+        $('headingA').textContent =
+          selected.a1 && selected.a2 ? pairName('a') : 'Team A';
 
-        const alreadyUsed = Object.entries(selected)
-          .some(([otherKey, value]) => otherKey !== key && value === newName);
+        $('headingB').textContent =
+          selected.b1 && selected.b2 ? pairName('b') : 'Team B';
 
-        if (alreadyUsed) {
-          populateAllSelects();
-          return;
-        }
+        $('teamA').classList.toggle(
+          'players-selected',
+          Boolean(selected.a1 && selected.a2)
+        );
 
-        selected[key] = newName;
+        $('teamB').classList.toggle(
+          'players-selected',
+          Boolean(selected.b1 && selected.b2)
+        );
+      }
+
+      function openPicker(side) {
+        pickerSide = side;
+        draftPlayers = [
+          selected[side + '1'] || '',
+          selected[side + '2'] || ''
+        ];
+
+        $('pickerTitle').textContent =
+          side === 'a' ? 'Select Team A players' : 'Select Team B players';
+
+        renderPicker();
+        $('playerPicker').classList.add('open');
+      }
+
+      function renderPicker() {
+        const list = $('pickerList');
+        list.innerHTML = '';
+
+        names.forEach(name => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'picker-option';
+          button.textContent = name;
+
+          const chosenIndex = draftPlayers.indexOf(name);
+          if (chosenIndex !== -1) {
+            button.classList.add('chosen');
+            button.textContent = name + (chosenIndex === 0 ? '  1' : '  2');
+          }
+
+          const usedByOtherTeam = allOtherSelections(pickerSide).includes(name);
+          button.disabled = usedByOtherTeam;
+
+          button.addEventListener('click', () => {
+            const existingIndex = draftPlayers.indexOf(name);
+
+            if (existingIndex !== -1) {
+              draftPlayers[existingIndex] = '';
+            } else if (!draftPlayers[0]) {
+              draftPlayers[0] = name;
+            } else if (!draftPlayers[1]) {
+              draftPlayers[1] = name;
+            } else {
+              draftPlayers[0] = draftPlayers[1];
+              draftPlayers[1] = name;
+            }
+
+            renderPicker();
+          });
+
+          list.appendChild(button);
+        });
+
+        $('pickerDone').disabled =
+          !draftPlayers[0] || !draftPlayers[1] ||
+          draftPlayers[0] === draftPlayers[1];
+      }
+
+      function closePicker() {
+        $('playerPicker').classList.remove('open');
+      }
+
+      $('headingA').addEventListener('click', () => openPicker('a'));
+      $('headingB').addEventListener('click', () => openPicker('b'));
+
+      $('pickerCancel').addEventListener('click', closePicker);
+
+      $('playerPicker').addEventListener('click', event => {
+        if (event.target === $('playerPicker')) closePicker();
+      });
+
+      $('pickerDone').addEventListener('click', () => {
+        if (
+          !draftPlayers[0] ||
+          !draftPlayers[1] ||
+          draftPlayers[0] === draftPlayers[1]
+        ) return;
+
+        selected[pickerSide + '1'] = draftPlayers[0];
+        selected[pickerSide + '2'] = draftPlayers[1];
+
         populateAllSelects();
+        closePicker();
         draw();
-      }
+      });
 
-      ['a1', 'a2', 'b1', 'b2'].forEach(key => {
-        const ids = {
-          a1: 'nameA1',
-          a2: 'nameA2',
-          b1: 'nameB1',
-          b2: 'nameB2'
-        };
-        $(ids[key]).addEventListener('change', () => onSelectionChange(key, ids[key]));
+      [
+        ['nameA1', 'a1'], ['nameA2', 'a2'],
+        ['nameB1', 'b1'], ['nameB2', 'b2']
+      ].forEach(([id, key]) => {
+        $(id).addEventListener('change', () => {
+          const newName = $(id).value;
+
+          const duplicate = Object.entries(selected).some(
+            ([otherKey, name]) => otherKey !== key && name === newName
+          );
+
+          if (duplicate) {
+            populateAllSelects();
+            return;
+          }
+
+          selected[key] = newName;
+          populateAllSelects();
+          draw();
+        });
       });
 
       function getElapsedMs() {
-        return running ? elapsedMs + Math.max(0, Date.now() - runStartedAt) : elapsedMs;
+        return running
+          ? elapsedMs + Math.max(0, Date.now() - runStartedAt)
+          : elapsedMs;
       }
 
       function formatTime(milliseconds) {
-        const totalSeconds = Math.floor(milliseconds / 1000);
-        return String(Math.floor(totalSeconds / 60)).padStart(2, '0') + ':' +
-          String(totalSeconds % 60).padStart(2, '0');
+        const total = Math.floor(milliseconds / 1000);
+        return String(Math.floor(total / 60)).padStart(2, '0') + ':' +
+          String(total % 60).padStart(2, '0');
       }
 
       function pauseClock() {
@@ -660,9 +787,10 @@
 
       function playMatchPointSound() {
         try {
-          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-          if (!AudioContextClass) return;
+          const AudioContextClass =
+            window.AudioContext || window.webkitAudioContext;
 
+          if (!AudioContextClass) return;
           if (!audioContext) audioContext = new AudioContextClass();
 
           const play = () => {
@@ -709,18 +837,25 @@
         $('scoreB').textContent = b;
         $('time').textContent = formatTime(getElapsedMs());
         $('start').textContent = running ? 'Ⅱ Pause' : '▶ Start';
-        $('target').value = target;
 
         $('teamA').classList.toggle('won', winner === 'a');
         $('teamB').classList.toggle('won', winner === 'b');
 
-        $('teamA').classList.toggle('match-point', !winner && a === target - 1);
-        $('teamB').classList.toggle('match-point', !winner && b === target - 1);
+        $('teamA').classList.toggle(
+          'match-point',
+          !winner && a === target - 1
+        );
+
+        $('teamB').classList.toggle(
+          'match-point',
+          !winner && b === target - 1
+        );
 
         const banner = $('winner');
 
         if (winner) {
           const message = '🏆 ' + pairName(winner) + ' WINS!';
+
           if (banner.textContent !== message) {
             banner.textContent = message;
             banner.classList.remove('show');
@@ -738,8 +873,8 @@
       function change(side, delta) {
         if (winner) return;
 
-        const wasMatchA = a === target - 1;
-        const wasMatchB = b === target - 1;
+        const oldMatchA = a === target - 1;
+        const oldMatchB = b === target - 1;
 
         if (side === 'a') a = Math.max(0, a + delta);
         else b = Math.max(0, b + delta);
@@ -747,10 +882,13 @@
         checkWinner();
 
         if (!winner) {
-          const isMatchA = a === target - 1;
-          const isMatchB = b === target - 1;
+          const newMatchA = a === target - 1;
+          const newMatchB = b === target - 1;
 
-          if ((!wasMatchA && isMatchA) || (!wasMatchB && isMatchB)) {
+          if (
+            (!oldMatchA && newMatchA) ||
+            (!oldMatchB && newMatchB)
+          ) {
             playMatchPointSound();
           }
         }
@@ -822,7 +960,7 @@
         draw();
       });
 
-      timerInterval = setInterval(draw, 100);
+      setInterval(draw, 100);
 
       $('resetClock').addEventListener('click', () => {
         running = false;
@@ -832,19 +970,22 @@
       });
 
       $('swap').addEventListener('click', () => {
-        const oldA = { ...selected };
-        const oldColorA = getComputedStyle($('teamA')).getPropertyValue('--team-color').trim();
-        const oldColorB = getComputedStyle($('teamB')).getPropertyValue('--team-color').trim();
-
-        selected.a1 = oldA.b1;
-        selected.a2 = oldA.b2;
-        selected.b1 = oldA.a1;
-        selected.b2 = oldA.a2;
-
         [a, b] = [b, a];
 
-        $('teamA').style.setProperty('--team-color', oldColorB);
-        $('teamB').style.setProperty('--team-color', oldColorA);
+        const old = { ...selected };
+        selected.a1 = old.b1;
+        selected.a2 = old.b2;
+        selected.b1 = old.a1;
+        selected.b2 = old.a2;
+
+        const colorA = getComputedStyle($('teamA'))
+          .getPropertyValue('--team-color').trim();
+
+        const colorB = getComputedStyle($('teamB'))
+          .getPropertyValue('--team-color').trim();
+
+        $('teamA').style.setProperty('--team-color', colorB);
+        $('teamB').style.setProperty('--team-color', colorA);
 
         if (winner) winner = winner === 'a' ? 'b' : 'a';
 
@@ -861,11 +1002,13 @@
         running = false;
         runStartedAt = 0;
         winner = null;
+
         draw();
       });
 
       $('target').addEventListener('change', () => {
         const value = Number($('target').value);
+
         target = Number.isFinite(value) && value >= 1
           ? Math.min(999, Math.floor(value))
           : 21;
@@ -878,10 +1021,14 @@
 
       function applyTheme() {
         document.body.classList.toggle('light', theme === 'light');
+
         $('themeToggle').textContent = theme === 'dark' ? '☀' : '☾';
+
         $('themeToggle').setAttribute(
           'aria-label',
-          theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'
+          theme === 'dark'
+            ? 'Switch to light theme'
+            : 'Switch to dark theme'
         );
 
         document.querySelector('meta[name="theme-color"]').content =
@@ -895,133 +1042,8 @@
         applyTheme();
       });
 
-      function renderNameList() {
-        const list = $('nameList');
-        list.innerHTML = '';
-
-        names.forEach(name => {
-          const row = document.createElement('div');
-          row.className = 'name-item';
-
-          if (editingName === name) {
-            const input = document.createElement('input');
-            input.className = 'edit-name-input';
-            input.value = name;
-            input.maxLength = 30;
-            input.setAttribute('aria-label', 'Edit player name');
-
-            const saveButton = document.createElement('button');
-            saveButton.type = 'button';
-            saveButton.textContent = 'Save';
-            saveButton.addEventListener('click', () => {
-              const updated = input.value.trim();
-
-              if (!updated) {
-                alert('Enter a player name.');
-                return;
-              }
-
-              if (names.some(n => n.toLowerCase() === updated.toLowerCase() && n !== name)) {
-                alert('That name already exists.');
-                return;
-              }
-
-              names[names.indexOf(name)] = updated;
-
-              Object.keys(selected).forEach(key => {
-                if (selected[key] === name) selected[key] = updated;
-              });
-
-              editingName = null;
-              save(STORAGE.names, JSON.stringify(names));
-              populateAllSelects();
-              renderNameList();
-              draw();
-            });
-
-            const cancelButton = document.createElement('button');
-            cancelButton.type = 'button';
-            cancelButton.textContent = 'Cancel';
-            cancelButton.addEventListener('click', () => {
-              editingName = null;
-              renderNameList();
-            });
-
-            row.append(input, saveButton, cancelButton);
-            list.appendChild(row);
-            input.focus();
-            return;
-          }
-
-          const label = document.createElement('span');
-          label.className = 'name-text';
-          label.textContent = name;
-
-          const editButton = document.createElement('button');
-          editButton.type = 'button';
-          editButton.textContent = 'Edit';
-          editButton.addEventListener('click', () => {
-            editingName = name;
-            renderNameList();
-          });
-
-          const deleteButton = document.createElement('button');
-          deleteButton.type = 'button';
-          deleteButton.textContent = 'Delete';
-          deleteButton.className = 'delete-name';
-
-          deleteButton.addEventListener('click', () => {
-            if (names.length <= 4) {
-              alert('Keep at least four names so both teams can have two different players.');
-              return;
-            }
-
-            if (!confirm(`Delete "${name}" from the player list?`)) return;
-
-            names = names.filter(n => n !== name);
-
-            Object.keys(selected).forEach(key => {
-              if (selected[key] === name) selected[key] = '';
-            });
-
-            normalizeSelections();
-            editingName = null;
-            save(STORAGE.names, JSON.stringify(names));
-            populateAllSelects();
-            renderNameList();
-            draw();
-          });
-
-          row.append(label, editButton, deleteButton);
-          list.appendChild(row);
-        });
-      }
-
-      $('addNameForm').addEventListener('submit', event => {
-        event.preventDefault();
-
-        const input = $('newName');
-        const name = input.value.trim();
-
-        if (!name) return;
-
-        if (names.some(n => n.toLowerCase() === name.toLowerCase())) {
-          alert('That name already exists.');
-          return;
-        }
-
-        names.push(name);
-        save(STORAGE.names, JSON.stringify(names));
-        populateAllSelects();
-        renderNameList();
-        input.value = '';
-      });
-
-      normalizeSelections();
-      save(STORAGE.names, JSON.stringify(names));
       applyTheme();
       populateAllSelects();
-      renderNameList();
       draw();
     })();
   </script>
