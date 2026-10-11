@@ -5,6 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#101318">
 <title>Scoreboard</title>
 <style>
@@ -53,43 +54,43 @@ footer button{width:100%}
 <header><span>SCOREBOARD</span></header>
 
 <div class="settings">
-  <label for="target">TARGET SCORE</label>
-  <input id="target" type="number" min="1" max="999" value="21" inputmode="numeric">
+<label for="target">TARGET SCORE</label>
+<input id="target" type="number" min="1" max="999" value="21" inputmode="numeric">
 </div>
 
 <div id="winner" role="status" aria-live="polite"></div>
 
 <section class="teams">
-  <div class="team blue" id="teamA">
-    <input id="nameA" value="TEAM A" aria-label="Team A name">
-    <div class="score" id="scoreA">0</div>
-    <div class="hint">TAP / SWIPE UP: +1<br>SWIPE DOWN: −1</div>
-  </div>
+<div class="team blue" id="teamA">
+<input id="nameA" value="TEAM A" aria-label="Team A name">
+<div class="score" id="scoreA">0</div>
+<div class="hint">TAP / SWIPE UP: +1<br>SWIPE DOWN: −1</div>
+</div>
 
-  <div class="team red" id="teamB">
-    <input id="nameB" value="TEAM B" aria-label="Team B name">
-    <div class="score" id="scoreB">0</div>
-    <div class="hint">TAP / SWIPE UP: +1<br>SWIPE DOWN: −1</div>
-  </div>
+<div class="team red" id="teamB">
+<input id="nameB" value="TEAM B" aria-label="Team B name">
+<div class="score" id="scoreB">0</div>
+<div class="hint">TAP / SWIPE UP: +1<br>SWIPE DOWN: −1</div>
+</div>
 </section>
 
 <section class="clock">
-  <div class="hint">MATCH CLOCK</div>
-  <div class="time" id="time">00:00</div>
-  <div class="controls">
-    <button id="start">▶ Start</button>
-    <button id="resetClock">Reset Clock</button>
-    <button id="full">Full Screen</button>
-  </div>
+<div class="hint">MATCH CLOCK</div>
+<div class="time" id="time">00:00</div>
+<div class="controls">
+<button id="start">▶ Start</button>
+<button id="resetClock">Reset Clock</button>
+<button id="full">Full Screen</button>
+</div>
 </section>
 
 <div class="actions">
-  <button id="swap">⇄ Swap Teams</button>
-  <button id="resetMatch">↻ Reset Match</button>
+<button id="swap">⇄ Swap Teams</button>
+<button id="resetMatch">↻ Reset Match</button>
 </div>
 
 <footer>
-  <button id="awake">Keep Awake: Off</button>
+<button id="awake">Keep Awake: Off</button>
 </footer>
 </main>
 
@@ -118,11 +119,8 @@ function teamName(side) {
 function checkWinner() {
   if (winner) return;
 
-  if (a >= getTarget()) {
-    winner = 'a';
-  } else if (b >= getTarget()) {
-    winner = 'b';
-  }
+  if (a >= getTarget()) winner = 'a';
+  else if (b >= getTarget()) winner = 'b';
 
   if (winner) {
     running = false;
@@ -133,11 +131,9 @@ function checkWinner() {
 function draw() {
   $('scoreA').textContent = a;
   $('scoreB').textContent = b;
-
   $('time').textContent =
     String(Math.floor(seconds / 60)).padStart(2, '0') + ':' +
     String(seconds % 60).padStart(2, '0');
-
   $('start').textContent = running ? 'Ⅱ Pause' : '▶ Start';
 
   $('teamA').classList.toggle('won', winner === 'a');
@@ -156,11 +152,8 @@ function draw() {
 function change(side, delta) {
   if (winner) return;
 
-  if (side === 'a') {
-    a = Math.max(0, a + delta);
-  } else {
-    b = Math.max(0, b + delta);
-  }
+  if (side === 'a') a = Math.max(0, a + delta);
+  else b = Math.max(0, b + delta);
 
   checkWinner();
   draw();
@@ -200,9 +193,7 @@ function setupSwipe(id, side) {
     }
   });
 
-  el.addEventListener('pointercancel', () => {
-    start = null;
-  });
+  el.addEventListener('pointercancel', () => start = null);
 }
 
 setupSwipe('teamA', 'a');
@@ -217,11 +208,9 @@ $('start').onclick = () => {
 
 setInterval(() => {
   const now = Date.now();
-
   if (running) {
     seconds += Math.max(0, Math.floor((now - last) / 1000));
   }
-
   last = now;
   draw();
 }, 250);
@@ -246,7 +235,6 @@ $('swap').onclick = () => {
   $('teamB').classList.toggle('red');
 
   if (winner) winner = winner === 'a' ? 'b' : 'a';
-
   draw();
 };
 
@@ -272,14 +260,20 @@ $('nameA').addEventListener('input', draw);
 $('nameB').addEventListener('input', draw);
 
 $('full').onclick = async () => {
+  const isStandalone =
+    window.navigator.standalone === true ||
+    window.matchMedia('(display-mode: standalone)').matches;
+
   try {
-    if (!document.fullscreenElement) {
-      await document.documentElement.requestFullscreen();
-    } else {
+    if (document.fullscreenElement) {
       await document.exitFullscreen();
+    } else if (document.documentElement.requestFullscreen) {
+      await document.documentElement.requestFullscreen();
+    } else if (!isStandalone) {
+      alert('On iPhone, open Safari Share → Add to Home Screen, then launch the scoreboard from its icon for a borderless view.');
     }
   } catch (e) {
-    alert('For a more app-like view, add this page to your Home Screen.');
+    alert('For a borderless view on iPhone, launch the scoreboard from your Home Screen.');
   }
 };
 
@@ -299,7 +293,7 @@ $('awake').onclick = async () => {
       $('awake').textContent = 'Keep Awake: Off';
     }
   } catch (e) {
-    alert('Keep Awake is unavailable in this preview.');
+    alert('Keep Awake is unavailable in this browser.');
   }
 };
 
