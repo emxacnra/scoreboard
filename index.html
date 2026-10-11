@@ -99,7 +99,7 @@
       align-items: center;
       padding: 12px 7px;
       border-radius: 18px;
-      border: 4px solid var(--team-color);
+      border: 8px solid var(--team-color);
       background: var(--surface);
       touch-action: none;
       user-select: none;
@@ -193,7 +193,7 @@
     .team.match-point .match-label { display: block; }
 
     .team.won {
-      border: 4px solid #ffd66b;
+      border: 8px solid #ffd66b;
       box-shadow: 0 0 18px #ffd66b44;
       animation: winnerPulse 1.4s ease-in-out infinite alternate;
     }
@@ -280,9 +280,7 @@
     }
 
     #resetMatch {
-      background: #a92c38;
-      color: white;
-      border-color: #d13e4d;
+      display: none !important;
     }
 
     #themeToggle {
@@ -384,7 +382,8 @@
   </main>
 
   <div class="footer">
-    Tap a team panel to add a point. Swipe up to add or down to subtract.
+    Tap to add a point. Swipe up to add or down to subtract.
+    Hold either team panel to reset the match.
   </div>
 
   <script>
@@ -408,6 +407,8 @@
       ];
 
       const SPECIAL_NAMES = new Set(['Team', 'A', 'B']);
+      const HOLD_DURATION = 700;
+      const HOLD_MOVE_LIMIT = 15;
 
       function read(key, fallback) {
         try {
@@ -454,7 +455,6 @@
         names = [...DEFAULT_NAMES];
       }
 
-      // Ensure shortcuts exist in previously saved player lists.
       ['A', 'B', 'Team'].forEach(name => {
         if (!names.some(n => n.toLowerCase() === name.toLowerCase())) {
           names.push(name);
@@ -518,8 +518,11 @@
         const next = {};
 
         ['a1', 'a2', 'b1', 'b2'].forEach(key => {
-          const excluded = Object.values(next);
-          next[key] = uniqueName(selected[key], excluded, key);
+          next[key] = uniqueName(
+            selected[key],
+            Object.values(next),
+            key
+          );
         });
 
         selected = next;
@@ -547,7 +550,7 @@
 
         select.innerHTML = '';
 
-        // Add regular player names only.
+        // Regular names are the only normal dropdown choices.
         names.forEach(name => {
           if (SPECIAL_NAMES.has(name)) return;
 
@@ -558,12 +561,13 @@
           select.appendChild(option);
         });
 
-        // Keep the currently selected shortcut visible,
-        // but do not offer it as a regular dropdown choice.
+        // Preserve a currently selected shortcut as the displayed value.
+        // The hidden option does not appear in the normal dropdown list.
         if (SPECIAL_NAMES.has(current)) {
           const option = document.createElement('option');
           option.value = current;
           option.textContent = current;
+          option.hidden = true;
           option.selected = true;
           select.insertBefore(option, select.firstChild);
         }
@@ -745,6 +749,20 @@
         draw();
       }
 
+      // Reset scores and clock only after confirmation.
+      function resetMatch() {
+        if (!confirm('Reset both scores and the match clock?')) return;
+
+        a = 0;
+        b = 0;
+        elapsedMs = 0;
+        running = false;
+        runStartedAt = 0;
+        winner = null;
+
+        draw();
+      }
+
       function setupSwipe(id, side) {
         const el = $(id);
         let start = null;
@@ -778,19 +796,35 @@
 
           if (event.target.closest('select, input, button')) return;
 
+          // Long press with minimal movement resets the match.
+          if (
+            duration >= HOLD_DURATION &&
+            Math.abs(dx) < HOLD_MOVE_LIMIT &&
+            Math.abs(dy) < HOLD_MOVE_LIMIT
+          ) {
+            resetMatch();
+            return;
+          }
+
+          // Swipe up adds a point; swipe down subtracts one.
           if (Math.abs(dy) > 25 && Math.abs(dy) > Math.abs(dx)) {
             change(side, dy < 0 ? 1 : -1);
           } else if (
             Math.abs(dx) < 12 &&
             Math.abs(dy) < 12 &&
-            duration < 500
+            duration < HOLD_DURATION
           ) {
+            // Short tap adds a point.
             change(side, 1);
           }
         });
 
         el.addEventListener('pointercancel', () => {
           start = null;
+        });
+
+        el.addEventListener('contextmenu', event => {
+          event.preventDefault();
         });
       }
 
@@ -844,18 +878,8 @@
         draw();
       });
 
-      $('resetMatch').addEventListener('click', () => {
-        if (!confirm('Reset both scores and the match clock?')) return;
-
-        a = 0;
-        b = 0;
-        elapsedMs = 0;
-        running = false;
-        runStartedAt = 0;
-        winner = null;
-
-        draw();
-      });
+      // Retained as a fallback handler; the button is hidden.
+      $('resetMatch').addEventListener('click', resetMatch);
 
       $('target').addEventListener('change', () => {
         const value = Number($('target').value);
@@ -910,7 +934,11 @@
           return;
         }
 
-        if (SPECIAL_NAMES.has(name)) {
+        if (
+          [...SPECIAL_NAMES].some(
+            special => special.toLowerCase() === name.toLowerCase()
+          )
+        ) {
           alert('A, B, and Team are reserved shortcut names.');
           return;
         }
