@@ -6,7 +6,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#030611">
-  <title>Neon Scoreboard v1.2</title>
+  <title>Neon Scoreboard v1.28</title>
 
   <style>
     :root {
@@ -60,18 +60,41 @@
         var(--bg);
     }
 
+    /* Title: plain text flanked by lines fading out from each team colour */
     header {
-      padding: 18px 10px 12px;
-      font-size: clamp(23px, 6vw, 32px);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 14px 12px;
+      font-size: clamp(20px, 5.5vw, 28px);
       font-weight: 950;
-      letter-spacing: 4px;
-      color: #f3fbff;
+      letter-spacing: 5px;
+      color: var(--text);
       text-shadow: none;
     }
 
-    body.light header {
-      color: #111a35;
-      text-shadow: none;
+    header::before,
+    header::after {
+      content: "";
+      flex: 1;
+      height: 3px;
+      border-radius: 3px;
+    }
+
+    header::before {
+      background: linear-gradient(90deg, transparent, var(--blue));
+    }
+
+    header::after {
+      background: linear-gradient(90deg, var(--red), transparent);
+    }
+
+    body.light header::before {
+      background: linear-gradient(90deg, transparent, #087fc0);
+    }
+
+    body.light header::after {
+      background: linear-gradient(90deg, #d4003c, transparent);
     }
 
     .settings {
@@ -239,6 +262,34 @@
 
     .team.match-point .match-label { display: block; }
 
+    /* In-panel winner label (replaces the old banner) */
+    .win-label {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin: 8px 0;
+      color: var(--gold);
+      font-size: 15px;
+      font-weight: 950;
+      letter-spacing: 2px;
+      animation: winnerIn .55s cubic-bezier(.2, .8, .2, 1) both;
+    }
+
+    .team.won .win-label { display: flex; }
+
+    .team.won .score { color: var(--gold); }
+
+    body.light .team.won .score { color: #b8860b; }
+
+    body.light .win-label { color: #b8860b; }
+
+    /* Losing panel fades back so the winner stands out */
+    .team.lost {
+      opacity: .45;
+      filter: saturate(.5);
+    }
+
     .team.won {
       border: 8px solid var(--gold);
       box-shadow:
@@ -269,39 +320,6 @@
       }
     }
 
-    #winner {
-      display: none;
-      position: relative;
-      margin: 14px 14px 4px;
-      padding: 14px 10px;
-      overflow: hidden;
-      border: 2px solid var(--gold);
-      border-radius: 15px;
-      background:
-        radial-gradient(ellipse at center, #ffbf001b, transparent 75%),
-        linear-gradient(135deg, #17100b, #090b10 55%, #17100b);
-      color: var(--gold);
-      font-size: clamp(20px, 5.5vw, 30px);
-      font-weight: 950;
-      letter-spacing: 1px;
-      text-align: center;
-      text-shadow:
-        0 0 5px #ffd54a,
-        0 0 14px #ffb300,
-        0 0 26px #ff8c00aa;
-      box-shadow:
-        0 0 8px #ffd54a99,
-        0 0 22px #ffb30066,
-        inset 0 0 18px #ffd54a19;
-    }
-
-    #winner.show {
-      display: block;
-      animation:
-        winnerIn .55s cubic-bezier(.2, .8, .2, 1) both,
-        winnerGlow 1.8s ease-in-out .55s infinite alternate;
-    }
-
     @keyframes winnerIn {
       0% {
         opacity: 0;
@@ -314,21 +332,6 @@
       100% {
         opacity: 1;
         transform: scale(1);
-      }
-    }
-
-    @keyframes winnerGlow {
-      from {
-        box-shadow:
-          0 0 8px #ffd54a77,
-          0 0 18px #ffb30044,
-          inset 0 0 12px #ffd54a11;
-      }
-      to {
-        box-shadow:
-          0 0 15px #ffd54a,
-          0 0 34px #ffb30099,
-          inset 0 0 24px #ffd54a2b;
       }
     }
 
@@ -468,6 +471,34 @@
       background: #e1eaff;
     }
 
+    #voiceToggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 44px;
+      padding: 4px;
+      border-color: var(--accent);
+      box-shadow: 0 0 10px #00eaff55;
+    }
+
+    #voiceToggle.on {
+      border-color: #00ff9d;
+      box-shadow: 0 0 12px #00ff9d66;
+    }
+
+    body.light #voiceToggle {
+      background: #fff;
+      color: #17213d;
+      border-color: #087fc0;
+      box-shadow: 0 0 8px #087fc022;
+    }
+
+    body.light #voiceToggle.on {
+      border-color: #008c60;
+      box-shadow: 0 0 8px #008c6022;
+    }
+
     #addPlayer {
       background: linear-gradient(135deg, #220b3d, #080d20);
       border-color: #e040fb;
@@ -521,8 +552,9 @@
   <header>SCOREBOARD</header>
 
   <div class="settings">
-    <label class="label" for="target">TARGET</label>
+    <label class="label" for="target">Target</label>
     <input id="target" type="number" min="1" max="999" value="21" inputmode="numeric">
+    <button id="voiceToggle" type="button" aria-label="Voice off"></button>
     <button id="themeToggle" type="button" aria-label="Toggle theme">☀</button>
   </div>
 
@@ -535,6 +567,7 @@
         </div>
         <div id="scoreA" class="score">0</div>
         <div class="match-label">MATCH POINT!</div>
+        <div class="win-label" role="status"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4"/><path d="M16 6h3a3 3 0 0 1-3 4"/><path d="M12 13v4"/><path d="M10 17h4"/><path d="M8 20h8"/></svg><span>WINNER!</span></div>
       </section>
 
       <section id="teamB" class="team" aria-label="Red court">
@@ -544,10 +577,10 @@
         </div>
         <div id="scoreB" class="score">0</div>
         <div class="match-label">MATCH POINT!</div>
+        <div class="win-label" role="status"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4"/><path d="M16 6h3a3 3 0 0 1-3 4"/><path d="M12 13v4"/><path d="M10 17h4"/><path d="M8 20h8"/></svg><span>WINNER!</span></div>
       </section>
     </div>
 
-    <div id="winner" role="status" aria-live="polite"></div>
     <div id="time" class="clock" aria-label="Elapsed match time">00:00</div>
 
     <div class="controls">
@@ -578,7 +611,8 @@
         b1: 'scoreboardSelectedB1_v1',
         b2: 'scoreboardSelectedB2_v1',
         target: 'scoreboardTarget_v2',
-        theme: 'scoreboardTheme_v2'
+        theme: 'scoreboardTheme_v2',
+        voice: 'scoreboardVoice_v1'
       };
 
       const DEFAULT_NAMES = [
@@ -650,6 +684,8 @@
       let running = false;
       let runStartedAt = 0;
       let winner = null;
+      // Tracks whether "20" has already been announced for each panel
+      let said20 = { a: false, b: false };
       let audioContext = null;
 
       let selected = {
@@ -665,6 +701,8 @@
       );
 
       let theme = read(STORAGE.theme, 'dark');
+      // Voice always starts off on page load
+      let voiceOn = false;
       $('target').value = target;
 
       function isPlayer1(key) {
@@ -812,6 +850,9 @@
       }
 
       function playScoreSound(delta) {
+        // Voice mode replaces the beeps
+        if (voiceOn && 'speechSynthesis' in window) return;
+
         try {
           const AudioContextClass =
             window.AudioContext || window.webkitAudioContext;
@@ -850,6 +891,9 @@
       }
 
       function playMatchPointSound() {
+        // Voice mode replaces the beeps
+        if (voiceOn && 'speechSynthesis' in window) return;
+
         try {
           const AudioContextClass =
             window.AudioContext || window.webkitAudioContext;
@@ -887,6 +931,50 @@
         } catch (_) {}
       }
 
+      // Speak text in British English (uses a UK voice if installed)
+      function speakText(text) {
+        if (!('speechSynthesis' in window)) return;
+
+        try {
+          const utterance = new SpeechSynthesisUtterance(text);
+          const british = window.speechSynthesis.getVoices().find(v =>
+            (v.lang || '').toLowerCase().replace('_', '-') === 'en-gb'
+          );
+
+          utterance.lang = 'en-GB';
+          if (british) utterance.voice = british;
+          utterance.rate = 1;
+          window.speechSynthesis.cancel();
+          window.speechSynthesis.speak(utterance);
+        } catch (_) {}
+      }
+
+      // Announce score as "<scoring team> <other team>"
+      function speakScore(side, matchPoint = false) {
+        if (!voiceOn || !('speechSynthesis' in window)) return;
+
+        try {
+          const scoring = side === 'a' ? a : b;
+          const other = side === 'a' ? b : a;
+          const otherSide = side === 'a' ? 'b' : 'a';
+
+          // 0-9 normal; 10-19 second digit only (10 -> "0", 15 -> "5");
+          // 20 spoken in full the first time for each panel, then "0";
+          // above 20 spoken normally
+          const say = (n, key) => {
+            if (n === 20) {
+              if (said20[key]) return '0';
+              said20[key] = true;
+              return '20';
+            }
+
+            return String(n >= 10 && n <= 19 ? n % 10 : n);
+          };
+
+          speakText(`${say(scoring, side)} ${say(other, otherSide)}` + (matchPoint ? ' match point' : ''));
+        } catch (_) {}
+      }
+
       function checkWinner() {
         if (winner) return;
         if (a >= target) winner = 'a';
@@ -912,23 +1000,8 @@
           'match-point', !winner && b === target - 1
         );
 
-        const banner = $('winner');
-
-        if (winner) {
-          const message = '🏆 ' + pairName(winner) + ' WINS!';
-
-          if (banner.textContent !== message) {
-            banner.textContent = message;
-            banner.classList.remove('show');
-            void banner.offsetWidth;
-            banner.classList.add('show');
-          } else {
-            banner.classList.add('show');
-          }
-        } else {
-          banner.textContent = '';
-          banner.classList.remove('show');
-        }
+        $('teamA').classList.toggle('lost', !!winner && winner !== 'a');
+        $('teamB').classList.toggle('lost', !!winner && winner !== 'b');
       }
 
       function change(side, delta) {
@@ -947,6 +1020,8 @@
         if (side === 'a') a = nextScore;
         else b = nextScore;
 
+        let matchPointHit = false;
+
         checkWinner();
 
         if (!winner) {
@@ -957,9 +1032,13 @@
             (!oldMatchA && newMatchA) ||
             (!oldMatchB && newMatchB)
           ) {
+            matchPointHit = true;
             playMatchPointSound();
           }
         }
+
+        // No announcement on the winning point
+        if (delta > 0 && !winner) speakScore(side, matchPointHit);
 
         draw();
       }
@@ -973,6 +1052,7 @@
         running = false;
         runStartedAt = 0;
         winner = null;
+        said20 = { a: false, b: false };
         draw();
       }
 
@@ -1077,6 +1157,7 @@
         selected.b2 = old.a2;
 
         [a, b] = [b, a];
+        said20 = { a: said20.b, b: said20.a };
 
         $('teamA').style.setProperty('--team-color', colorB);
         $('teamB').style.setProperty('--team-color', colorA);
@@ -1123,6 +1204,34 @@
         save(STORAGE.theme, theme);
       }
 
+      function applyVoice() {
+        // Loudspeaker SVG icons (inherit button text colour)
+        const svgStart =
+          '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" ' +
+          'stroke="currentColor" stroke-width="2" stroke-linecap="round" ' +
+          'stroke-linejoin="round" aria-hidden="true">' +
+          '<path d="M3 10l11-5v14L3 14z"/><path d="M7 14.5l1.5 5h3l-1-4"/>';
+        const iconOn = svgStart + '<path d="M18 9a4 4 0 0 1 0 6"/></svg>';
+        const iconOff = svgStart + '<path d="M3 3l18 18"/></svg>';
+
+        $('voiceToggle').innerHTML = voiceOn ? iconOn : iconOff;
+        $('voiceToggle').setAttribute(
+          'aria-label',
+          voiceOn ? 'Voice on' : 'Voice off'
+        );
+        $('voiceToggle').classList.toggle('on', voiceOn);
+      }
+
+      $('voiceToggle').addEventListener('click', () => {
+        voiceOn = !voiceOn;
+        applyVoice();
+
+        // Speak a short confirmation (also unlocks speech on iOS)
+        if (voiceOn && 'speechSynthesis' in window) {
+          speakText('Voice on');
+        }
+      });
+
       $('themeToggle').addEventListener('click', () => {
         theme = theme === 'dark' ? 'light' : 'dark';
         applyTheme();
@@ -1168,6 +1277,7 @@
       save(STORAGE.names, JSON.stringify(names));
       normalizeSelections();
       applyTheme();
+      applyVoice();
       populateAllSelects();
       draw();
     })();
