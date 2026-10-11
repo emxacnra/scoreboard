@@ -6,7 +6,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#030611">
-  <title>Neon Scoreboard v1.30</title>
+  <title>Neon Scoreboard v1.31</title>
 
   <style>
     :root {
@@ -1060,6 +1060,14 @@
       function setupSwipe(id, side) {
         const el = $(id);
         let start = null;
+        let holdTimer = null;
+
+        function clearHold() {
+          if (holdTimer !== null) {
+            clearTimeout(holdTimer);
+            holdTimer = null;
+          }
+        }
 
         el.addEventListener('pointerdown', event => {
           if (event.target.closest('select, input, button')) {
@@ -1077,9 +1085,32 @@
             y: event.clientY,
             time: Date.now()
           };
+
+          // Trigger the reset automatically once the hold time is reached,
+          // without waiting for the finger to lift
+          clearHold();
+          holdTimer = setTimeout(() => {
+            holdTimer = null;
+            if (!start) return;
+            start = null;
+            resetMatch();
+          }, HOLD_DURATION);
+        });
+
+        // Moving too far cancels the hold (it becomes a swipe)
+        el.addEventListener('pointermove', event => {
+          if (!start || holdTimer === null) return;
+
+          if (
+            Math.abs(event.clientX - start.x) >= HOLD_MOVE_LIMIT ||
+            Math.abs(event.clientY - start.y) >= HOLD_MOVE_LIMIT
+          ) {
+            clearHold();
+          }
         });
 
         el.addEventListener('pointerup', event => {
+          clearHold();
           if (!start) return;
 
           const dx = event.clientX - start.x;
@@ -1110,6 +1141,7 @@
         });
 
         el.addEventListener('pointercancel', () => {
+          clearHold();
           start = null;
         });
 
