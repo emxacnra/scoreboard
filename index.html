@@ -5,135 +5,207 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#090b10">
   <title>Scoreboard</title>
 
   <style>
+    :root {
+      color-scheme: dark;
+      --bg: #090b10;
+      --surface: #11151d;
+      --surface2: #191f2a;
+      --text: #f5f7ff;
+      --muted: #8c96a8;
+      --border: #293344;
+      --accent: #38bdf8;
+      --button: #202938;
+    }
+
+    body.light {
+      color-scheme: light;
+      --bg: #f1f4f9;
+      --surface: #ffffff;
+      --surface2: #e8edf5;
+      --text: #131a27;
+      --muted: #657084;
+      --border: #d1d9e6;
+      --accent: #087fc0;
+      --button: #e0e7f0;
+    }
+
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      background: #101114;
-      color: white;
-      font-family: Arial, sans-serif;
-      text-align: center;
       min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      text-align: center;
+      transition: background .25s, color .25s;
       overflow-x: hidden;
     }
 
     header {
-      padding: 16px 10px 10px;
+      padding: 18px 10px 12px;
       font-size: 28px;
       font-weight: 900;
-      letter-spacing: 3px;
+      letter-spacing: 4px;
     }
 
     .settings {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      margin: 8px 10px 12px;
+      gap: 9px;
       flex-wrap: wrap;
+      padding: 4px 12px 14px;
     }
 
-    .settings label {
-      font-size: 14px;
-      color: #ccc;
+    .label {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 600;
     }
 
-    #target {
+    input, button { font: inherit; }
+
+    input[type="number"] {
       width: 65px;
       padding: 8px;
-      border: 1px solid #555;
-      border-radius: 8px;
-      background: #25262b;
-      color: white;
+      color: var(--text);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 9px;
       text-align: center;
       font-size: 16px;
     }
 
     .teams {
       display: flex;
-      gap: 8px;
-      padding: 0 8px;
-      height: min(56vh, 460px);
-      min-height: 250px;
+      gap: 10px;
+      padding: 0 10px;
+      height: clamp(280px, 49vh, 480px);
     }
 
     .team {
+      --team-color: #1680ff;
       flex: 1;
       min-width: 0;
-      border-radius: 16px;
       display: flex;
       flex-direction: column;
-      align-items: center;
       justify-content: center;
-      padding: 12px 6px;
+      align-items: center;
+      padding: 12px 7px;
+      border-radius: 18px;
+      border: 1px solid color-mix(in srgb, var(--team-color), transparent 35%);
+      background:
+        radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--team-color), transparent 79%), transparent 70%),
+        var(--surface);
+      box-shadow: inset 0 0 24px color-mix(in srgb, var(--team-color), transparent 94%);
       touch-action: none;
       user-select: none;
       -webkit-user-select: none;
       overflow: hidden;
-    }
-
-    .team.blue { background: #1565FF; }
-    .team.red { background: #E53935; }
-
-    .team.won {
-      outline: 4px solid #FFD54F;
-      outline-offset: -4px;
+      transition: border-color .2s, box-shadow .2s;
     }
 
     .team-name {
-      width: 95%;
+      width: 100%;
       min-width: 0;
-      border: none;
-      border-bottom: 2px solid rgba(255,255,255,.65);
-      outline: none;
-      border-radius: 0;
-      background: transparent;
-      color: white;
-      text-align: center;
-      text-transform: uppercase;
-      font-weight: 800;
-      font-size: clamp(14px, 3.5vw, 22px);
-      padding: 6px 0;
+      padding: 7px 0;
       margin-bottom: 12px;
+      border: none;
+      border-bottom: 2px solid var(--team-color);
+      border-radius: 0;
+      outline: none;
+      background: transparent;
+      color: var(--text);
+      text-align: center;
+      font-size: clamp(13px, 3.5vw, 21px);
+      font-weight: 850;
+      text-transform: uppercase;
       touch-action: manipulation;
     }
 
-    .team-name::placeholder {
-      color: rgba(255,255,255,.75);
-    }
+    .team-name:focus { border-bottom-color: var(--accent); }
 
     .score {
-      font-size: clamp(80px, 23vw, 150px);
+      color: var(--text);
+      font-size: clamp(74px, 22vw, 150px);
       line-height: 1;
-      font-weight: 900;
+      font-weight: 950;
+      letter-spacing: -4px;
       font-variant-numeric: tabular-nums;
+      text-shadow: 0 0 24px color-mix(in srgb, var(--team-color), transparent 78%);
     }
 
-    .hint {
-      margin-top: 16px;
-      font-size: 12px;
-      opacity: .8;
-      line-height: 1.5;
+    .team-color {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 7px;
+      margin-top: 17px;
+    }
+
+    input[type="color"] {
+      width: 32px;
+      height: 28px;
+      padding: 0;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      background: var(--surface2);
+      cursor: pointer;
+    }
+
+    .color-label {
+      color: var(--muted);
+      font-size: 10px;
     }
 
     #winner {
       display: none;
-      margin: 12px 8px;
-      padding: 12px;
-      color: #FFD54F;
-      font-size: clamp(20px, 5vw, 30px);
-      font-weight: 900;
+      margin: 14px 10px 4px;
+      padding: 12px 8px;
+      color: #ffd66b;
+      font-size: clamp(20px, 5.5vw, 30px);
+      font-weight: 950;
+      letter-spacing: .5px;
     }
 
-    #winner.show { display: block; }
+    #winner.show {
+      display: block;
+      animation: winnerIn .5s ease both, winnerGlow 1.8s ease-in-out .5s infinite alternate;
+    }
+
+    @keyframes winnerIn {
+      0% { opacity: 0; transform: scale(.65) translateY(10px); }
+      65% { opacity: 1; transform: scale(1.08) translateY(0); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes winnerGlow {
+      from { text-shadow: 0 0 5px #ffc94a55; }
+      to { text-shadow: 0 0 24px #ffc94acc; }
+    }
+
+    .team.won {
+      border: 3px solid #ffd66b;
+      box-shadow: 0 0 22px #ffd66b44, inset 0 0 30px #ffd66b12;
+      animation: winnerPulse 1.4s ease-in-out infinite alternate;
+    }
+
+    @keyframes winnerPulse {
+      from { box-shadow: 0 0 8px #ffd66b33; }
+      to { box-shadow: 0 0 26px #ffd66b77; }
+    }
 
     .clock {
-      margin: 12px 0 8px;
-      font-size: clamp(34px, 9vw, 48px);
-      font-weight: 800;
+      margin: 17px 0 10px;
+      font-size: clamp(38px, 10vw, 52px);
+      line-height: 1.1;
+      font-weight: 850;
+      letter-spacing: 2px;
       font-variant-numeric: tabular-nums;
     }
 
@@ -143,37 +215,60 @@
       align-items: center;
       flex-wrap: wrap;
       gap: 8px;
-      padding: 6px 10px;
+      padding: 6px 12px;
     }
 
     button {
-      border: 1px solid #555;
-      border-radius: 10px;
       padding: 11px 14px;
-      background: #292a30;
-      color: white;
-      font-size: 14px;
-      font-weight: 700;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--button);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 750;
       cursor: pointer;
       touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    button:active { background: #44464f; }
+    button:active { transform: scale(.97); }
 
     #start {
-      background: #16803c;
-      border-color: #16803c;
+      min-width: 112px;
+      background: #087d49;
+      color: white;
+      border-color: #0b9d60;
     }
 
     #resetMatch {
-      background: #9f2929;
-      border-color: #9f2929;
+      background: #a92c38;
+      color: white;
+      border-color: #d13e4d;
     }
 
+    #themeToggle { color: var(--accent); }
+
     .footer {
-      padding: 8px 10px 16px;
-      color: #888;
+      padding: 12px 10px 22px;
+      color: var(--muted);
       font-size: 11px;
+    }
+
+    @media (max-height: 650px) {
+      header { padding-top: 9px; padding-bottom: 7px; }
+      .settings { padding-bottom: 8px; }
+      .teams { height: 42vh; min-height: 210px; }
+      .clock { margin-top: 10px; }
+      .team-color { margin-top: 9px; }
+      .footer { padding-bottom: 10px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
     }
   </style>
 </head>
@@ -182,22 +277,29 @@
   <header>SCOREBOARD</header>
 
   <div class="settings">
-    <label for="target">Target score</label>
+    <label class="label" for="target">TARGET</label>
     <input id="target" type="number" min="1" max="999" value="21" inputmode="numeric">
+    <button id="themeToggle" type="button">☀ Light Mode</button>
   </div>
 
   <main>
     <div class="teams">
-      <section id="teamA" class="team blue" aria-label="Team A score panel">
+      <section id="teamA" class="team" style="--team-color:#1680ff" aria-label="Team A score panel">
         <input id="nameA" class="team-name" type="text" value="TEAM A" maxlength="18" aria-label="Team A name">
         <div id="scoreA" class="score">0</div>
-        <div class="hint">TAP: +1<br>SWIPE UP: +1<br>SWIPE DOWN: −1</div>
+        <div class="team-color">
+          <span class="color-label">TEAM COLOR</span>
+          <input id="colorA" type="color" value="#1680ff" aria-label="Team A color">
+        </div>
       </section>
 
-      <section id="teamB" class="team red" aria-label="Team B score panel">
+      <section id="teamB" class="team" style="--team-color:#ff4058" aria-label="Team B score panel">
         <input id="nameB" class="team-name" type="text" value="TEAM B" maxlength="18" aria-label="Team B name">
         <div id="scoreB" class="score">0</div>
-        <div class="hint">TAP: +1<br>SWIPE UP: +1<br>SWIPE DOWN: −1</div>
+        <div class="team-color">
+          <span class="color-label">TEAM COLOR</span>
+          <input id="colorB" type="color" value="#ff4058" aria-label="Team B color">
+        </div>
       </section>
     </div>
 
@@ -207,17 +309,17 @@
 
     <div class="controls">
       <button id="start" type="button">▶ Start</button>
-      <button id="resetClock" type="button">Reset Clock</button>
+      <button id="resetClock" type="button">↺ Reset Clock</button>
     </div>
 
     <div class="actions">
-      <button id="swap" type="button">Swap Teams</button>
-      <button id="resetMatch" type="button">Reset Match</button>
+      <button id="swap" type="button">⇄ Swap Teams</button>
+      <button id="resetMatch" type="button">↻ Reset Match</button>
       <button id="awake" type="button">Keep Awake: Off</button>
     </div>
   </main>
 
-  <div class="footer">Tap or swipe inside either team's panel to change the score.</div>
+  <div class="footer">Tap or swipe vertically on a team panel to change its score.</div>
 
   <script>
     const $ = id => document.getElementById(id);
@@ -270,8 +372,15 @@
       const banner = $('winner');
 
       if (winner) {
-        banner.textContent = '🏆 ' + teamName(winner) + ' WINS!';
-        banner.classList.add('show');
+        const newText = '🏆 ' + teamName(winner) + ' WINS!';
+        if (banner.textContent !== newText) {
+          banner.textContent = newText;
+          banner.classList.remove('show');
+          void banner.offsetWidth;
+          banner.classList.add('show');
+        } else {
+          banner.classList.add('show');
+        }
       } else {
         banner.textContent = '';
         banner.classList.remove('show');
@@ -281,11 +390,8 @@
     function change(side, delta) {
       if (winner) return;
 
-      if (side === 'a') {
-        a = Math.max(0, a + delta);
-      } else {
-        b = Math.max(0, b + delta);
-      }
+      if (side === 'a') a = Math.max(0, a + delta);
+      else b = Math.max(0, b + delta);
 
       checkWinner();
       draw();
@@ -312,7 +418,6 @@
         const dx = event.clientX - start.x;
         const dy = event.clientY - start.y;
         const duration = Date.now() - start.time;
-
         start = null;
 
         if (Math.abs(dy) > 25 && Math.abs(dy) > Math.abs(dx)) {
@@ -336,7 +441,6 @@
 
     $('start').onclick = () => {
       if (winner) return;
-
       running = !running;
       last = Date.now();
       draw();
@@ -362,20 +466,20 @@
 
     $('swap').onclick = () => {
       const oldNameA = $('nameA').value;
+      const oldColorA = $('colorA').value;
 
       $('nameA').value = $('nameB').value;
       $('nameB').value = oldNameA;
 
+      $('colorA').value = $('colorB').value;
+      $('colorB').value = oldColorA;
+
       [a, b] = [b, a];
 
-      $('teamA').classList.toggle('blue');
-      $('teamA').classList.toggle('red');
-      $('teamB').classList.toggle('blue');
-      $('teamB').classList.toggle('red');
+      applyTeamColor('a');
+      applyTeamColor('b');
 
-      if (winner) {
-        winner = winner === 'a' ? 'b' : 'a';
-      }
+      if (winner) winner = winner === 'a' ? 'b' : 'a';
 
       draw();
     };
@@ -401,8 +505,30 @@
     $('nameA').addEventListener('input', draw);
     $('nameB').addEventListener('input', draw);
 
+    function applyTeamColor(side) {
+      const color = $(side === 'a' ? 'colorA' : 'colorB').value;
+      $(side === 'a' ? 'teamA' : 'teamB').style.setProperty('--team-color', color);
+    }
+
+    $('colorA').addEventListener('input', () => applyTeamColor('a'));
+    $('colorB').addEventListener('input', () => applyTeamColor('b'));
+
+    $('themeToggle').onclick = () => {
+      document.body.classList.toggle('light');
+      const light = document.body.classList.contains('light');
+
+      $('themeToggle').textContent = light ? '☾ Dark Mode' : '☀ Light Mode';
+      document.querySelector('meta[name="theme-color"]').content =
+        light ? '#f1f4f9' : '#090b10';
+    };
+
     $('awake').onclick = async () => {
       try {
+        if (!('wakeLock' in navigator)) {
+          alert('Keep Awake is not supported by this browser. Try opening the scoreboard in Safari.');
+          return;
+        }
+
         if (!wakeLock) {
           wakeLock = await navigator.wakeLock.request('screen');
           $('awake').textContent = 'Keep Awake: On';
@@ -416,8 +542,8 @@
           wakeLock = null;
           $('awake').textContent = 'Keep Awake: Off';
         }
-      } catch (e) {
-        alert('Keep Awake is unavailable in this browser.');
+      } catch (error) {
+        alert('Keep Awake could not be enabled. Keep the page open and check your browser settings.');
       }
     };
 
@@ -425,13 +551,16 @@
       if (document.visibilityState === 'visible' && wakeLock) {
         try {
           wakeLock = await navigator.wakeLock.request('screen');
-        } catch (e) {
+          $('awake').textContent = 'Keep Awake: On';
+        } catch (error) {
           wakeLock = null;
           $('awake').textContent = 'Keep Awake: Off';
         }
       }
     });
 
+    applyTeamColor('a');
+    applyTeamColor('b');
     draw();
   </script>
 </body>
