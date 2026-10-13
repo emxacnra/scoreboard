@@ -6,7 +6,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#030611">
-  <title>Neon Scoreboard v1.33</title>
+  <title>Neon Scoreboard v1.34</title>
 
   <style>
     :root {
@@ -702,12 +702,8 @@
       let said20 = { a: false, b: false };
       let audioContext = null;
 
-      let selected = {
-        a1: read(STORAGE.a1, 'Team'),
-        a2: read(STORAGE.a2, 'A'),
-        b1: read(STORAGE.b1, 'Team'),
-        b2: read(STORAGE.b2, 'B')
-      };
+      // Players always start from the defaults on page load
+      let selected = { ...DEFAULT_SELECTED };
 
       let target = Math.max(
         1,
