@@ -6,7 +6,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#030611">
-  <title>Neon Scoreboard v1.32</title>
+  <title>Neon Scoreboard v1.33</title>
 
   <style>
     :root {
@@ -632,6 +632,9 @@
         'Jessica', 'Lulong', 'Via', 'Dayang'
       ];
 
+      // Default player selection, restored on match reset
+      const DEFAULT_SELECTED = { a1: 'Team', a2: 'A', b1: 'Team', b2: 'B' };
+
       const SPECIAL_NAMES = new Set(['Team', 'A', 'B']);
       const HOLD_DURATION = 500;
       const HOLD_MOVE_LIMIT = 15;
@@ -1056,7 +1059,7 @@
       }
 
       function resetMatch() {
-        if (!confirm('Reset both scores and the match clock?')) return;
+        if (!confirm('Reset scores, match clock and players?')) return;
 
         a = 0;
         b = 0;
@@ -1065,6 +1068,13 @@
         runStartedAt = 0;
         winner = null;
         said20 = { a: false, b: false };
+
+        // Restore default players and original court colours
+        selected = { ...DEFAULT_SELECTED };
+        $('teamA').style.removeProperty('--team-color');
+        $('teamB').style.removeProperty('--team-color');
+        populateAllSelects();
+
         draw();
       }
 
